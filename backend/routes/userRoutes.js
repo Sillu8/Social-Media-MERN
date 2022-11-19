@@ -1,18 +1,13 @@
 const express = require('express');
-const { getUser, setUser } = require('../controllers/userController');
 const router = express.Router();
 
+const { getUser, login, signup } = require('../controllers/userController');
+const protect = require('../middleware/authMiddleware');
 
 
-router.route('/').get(getUser).post(setUser);
-
-router.put('/:id',(req,res)=>{
-    res.status(200).json({message: 'update goal'})
-});
-
-router.delete('/:id',(req,res)=>{
-    res.status(200).json({message: 'Delete goals'})
-});
+router.route('/').get(protect, getUser)
+router.post('/signup',signup);
+router.post('/login',login);
 
 
 
