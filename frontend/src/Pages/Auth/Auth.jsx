@@ -6,7 +6,7 @@ import Input from './Input'
 import { useDispatch } from 'react-redux'
 import { useNavigation } from 'react-router-dom'
 // import {signup, login} from '../../redux/auth/authSlice';
-import Logo from '../../images/bird.jpg'
+import Logo from '../../images/bird.png'
 
 const initialState = { name: '', username: '', email: '', password: '', confirmPassword: '', phone: '' }
 

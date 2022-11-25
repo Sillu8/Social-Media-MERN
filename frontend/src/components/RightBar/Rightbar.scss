@@ -1,0 +1,16 @@
+.RightSidebar {
+    flex: 3;
+    position: sticky;
+    top: 80px;
+    height: calc(100vh - 80px);
+    overflow: scroll;
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
+
+    .container {
+        padding: 20px;
+        
+    }
+}

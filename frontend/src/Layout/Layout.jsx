@@ -1,27 +1,24 @@
 import { Container, Grid } from '@mui/material'
 import React from 'react'
-import LeftSide from '../components/LeftSide/LeftSide'
-import Search from '../components/LogoSearch/Search'
+import Navbar from '../components/Navbar/Navbar'
 import PostSide from '../components/PostSide/PostSide'
-import Suggestions from '../components/Suggestions/Suggestions'
 import './Layout.scss'
+import './style.scss'
+import Sidebar from '../components/Sidebar/Sidebar'
+import Rightbar from '../components/RightBar/Rightbar'
 
 const Layout = ({ children }) => {
     return (
-        <Container maxWidth={'xxl'}>
-            <Grid container spacing={2}>
-                <Grid item xs={3}>
-                    <LeftSide />
-                </Grid>
-                <Grid item xs={5}>
-                    {children}
-                </Grid>
-                <Grid item xs={4} sx={{ display: { xs: 'none', md: 'block' } }}>
-                    <Search/>
-                    <Suggestions />
-                </Grid>
-            </Grid>
-        </Container>
+        <div className='theme-light'>
+            <Navbar />
+            <div style={{ display: 'flex' }} className="layout">
+                <Sidebar />
+                <div className="child" style={{ flex: 6 }}>
+                    <PostSide />
+                </div>
+                <Rightbar />
+            </div>
+        </div>
     )
 }
 

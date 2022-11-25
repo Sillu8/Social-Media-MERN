@@ -1,0 +1,56 @@
+@import '../../Layout/style.scss';
+
+.navbar {
+    @include themify($themes) {
+
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 20px;
+        gap: 30px;
+        border-bottom: 1px solid lightgray;
+        position: sticky;
+        top: 0;
+        background-color: themed("bg");
+        height: 60px;
+        color: themed('textColor');
+
+        .left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+
+            img {
+                width: 40px;
+                height: 40px;
+            }
+
+            span {
+                font-weight: bold;
+                font-size: 20px;
+                color: rgb(152, 168, 248);
+            }
+        }
+
+        .right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            justify-content: flex-end;
+
+            .search {
+                width: 200px;
+            }
+
+            .user {
+                display: flex;
+                align-items: center;
+                gap: 5px;
+
+                span {
+                    font-weight: bold;
+                }
+            }
+        }
+    }
+}

@@ -1,4 +1,4 @@
-import { Button } from '@mui/material'
+import { Button, Grid } from '@mui/material'
 import { styled } from '@mui/material/styles';
 import HomeIcon from '@mui/icons-material/Home';
 import ExploreIcon from '@mui/icons-material/Explore';
@@ -12,17 +12,17 @@ import './MenuIcons.scss'
 
 const MenuIcons = () => {
     const MenuButton = styled(Button)(({ theme }) => ({
-        color: 'black',
+        color: '#393E46',
     }));
 
 
     const menuIcons = [
         {
-            icon: <HomeIcon />,
+            icon: <HomeIcon color='#393E46' />,
             option: 'Home'
         },
         {
-            icon: <ExploreIcon />,
+            icon: <ExploreIcon color='#393E46' />,
             option: 'Explore'
         },
         {
@@ -52,10 +52,16 @@ const MenuIcons = () => {
             {
                 menuIcons.map((elem) => {
                     return (
-                        <div className='menu-div'>
-                            <div className="icon">{elem.icon}</div>
-                            <MenuButton variant="text" key={elem.option}>{elem.option}</MenuButton>
-                        </div>
+                        // <div className='menu-div'>
+                        <Grid className='menu-div'>
+                            <Grid item>
+                                <div className="icon">{elem.icon}</div>
+                            </Grid>
+                            <Grid item sx={{display: {xs:'none',lg:'block'}}}>
+                                <MenuButton variant="text" key={elem.option}>{elem.option}</MenuButton>
+                            </Grid>
+                        </Grid>
+                        // </div>
                     )
                 })
             }
