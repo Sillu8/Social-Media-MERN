@@ -1,0 +1,39 @@
+$black: #242d49;
+$yellow: #f5c32c;
+$profile-shadow: 0px 4px 17px 2px rgba(0,0,0,0.25);
+
+.Home{
+    overflow: auto;
+    color: $black;
+    background: rgb(244, 248, 252);
+    height: 100vh;
+    width: 100%;
+    position: relative;
+    display: grid;
+    grid-template-columns: 25rem auto 27rem;
+    gap: 1rem;
+    
+    
+    // .blur{
+    //     position: absolute;
+    //     width: 22rem;
+    //     height: 14rem;
+    //     border-radius: 50%;
+    //     background: #a6ddf0;
+    //     filter:blur(80px)
+    // }
+
+    // .blur1{
+    //     top: 0%;
+    //     right: 0;
+    // }
+    
+    // .blur2{
+    //     top: 36%;
+    //     left: 3rem;
+    // }
+}
+
+::-webkit-scrollbar{
+    display: none;
+}

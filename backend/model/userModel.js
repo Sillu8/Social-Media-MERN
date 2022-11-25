@@ -44,6 +44,14 @@ const userSchema = mongoose.Schema({
         type: String,
         default: null,
     },
+    unseenNotifications: {
+        type: [String],
+        default: null
+    },
+    seenNotifications: {
+        type: [String],
+        default: null
+    },
     details: {
         dob:{
             type: Date,
