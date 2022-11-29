@@ -40,10 +40,6 @@ const userSchema = mongoose.Schema({
         type: String,
         default: null,
     },
-    coverPic: {
-        type: String,
-        default: null,
-    },
     unseenNotifications: {
         type: [String],
         default: null

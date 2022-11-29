@@ -4,26 +4,57 @@ import { useState } from 'react'
 import './Auth.scss'
 import Input from './Input'
 import { useDispatch } from 'react-redux'
-import { useNavigation } from 'react-router-dom'
-// import {signup, login} from '../../redux/auth/authSlice';
-import Logo from '../../images/bird.png'
+import { useNavigate } from 'react-router-dom'
+import Logo from '../../images/bird.png';
+import { API } from '../../axios'
+import toast from 'react-hot-toast'
+import { hideLoading, showLoading } from '../../redux/loading/loadSlice'
 
 const initialState = { name: '', username: '', email: '', password: '', confirmPassword: '', phone: '' }
 
 const Auth = () => {
 
     const dispatch = useDispatch();
-    // const navigation = useNavigation();
+    const navigate = useNavigate();
     const [isSignup, setIsSignup] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
-    const [formData, setFormData] = useState()
+    const [formData, setFormData] = useState(initialState)
 
     const handleSubmit = (e) => {
         e.preventDefault();
         if (isSignup) {
-            // dispatch(signup(formData, navigation))
+            (async () => {
+                    try {
+                    dispatch(showLoading())
+                    const response = await API.post('/user/signup', formData);
+                    if (response.data.status === 'success') {
+                        dispatch(hideLoading());
+                        toast.success('redirecting to login page...');
+                        switchMode();
+                        setFormData({...formData,password: ''})
+                    }
+                } catch (error) {
+                    dispatch(hideLoading());
+                    toast.error(error.response.data.message);
+                }
+            })()
         } else {
-            // dispatch(login(formData, navigation))
+
+            (async () => {
+                try {
+                    dispatch(showLoading())
+                    const response = await API.post('/user/login', formData);
+                    if (response.data.status === 'success') {
+                        dispatch(hideLoading());
+                        toast.success('Welcome');
+                        localStorage.setItem('token',response.data.data.token);
+                        navigate('/home');
+                    }
+                } catch (error) {
+                   dispatch(hideLoading());
+                   toast.error(error.response.data.message);
+                }
+            })();
         }
     };
 
@@ -43,7 +74,7 @@ const Auth = () => {
                         <Paper className='paper' sx={{ direction: 'column', justifyContent: 'center' }}>
                             <Grid sx={{ display: 'flex', flexDirection: 'column' }}>
                                 <img src={Logo} alt="Logo" style={{ height: '40px', width: '80px', alignSelf: 'center' }} />
-                                <Typography color={'gray'} marginBottom={'20px'} variant='body2' align='center'>Connect to the world with <span style={{color:'black'}}><b>Chatter</b>!</span></Typography>
+                                <Typography color={'gray'} marginBottom={'20px'} variant='body2' align='center'>Connect to the world with <span style={{ color: 'black' }}><b>Chatter</b>!</span></Typography>
                             </Grid>
                             <Typography variant='h5' align='center' marginBottom={'10px'}>{isSignup ? 'SIGN UP' : 'LOGIN'}</Typography>
                             <form className='form' onSubmit={handleSubmit}>
@@ -57,7 +88,7 @@ const Auth = () => {
                                         )
                                     }
                                     <Input name='email' label='Email' handleChange={handleChange} type='email' />
-                                    <Input name='password' label='Password' handleChange={handleChange} type={showPassword ? 'text' : 'password'} handleShowPassword={handleShowPassword} />
+                                    <Input name='password' label='Password' value={formData?.password} handleChange={handleChange} type={showPassword ? 'text' : 'password'} handleShowPassword={handleShowPassword} />
                                     {
                                         isSignup &&
                                         <Input name='confirmPassword' label='Confirm Password' handleChange={handleChange} type='password' />

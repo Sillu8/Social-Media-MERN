@@ -8,15 +8,31 @@ import MessageRoundedIcon from '@mui/icons-material/MessageRounded';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import SettingsIcon from '@mui/icons-material/Settings';
 import LogoutIcon from '@mui/icons-material/Logout';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { useSelector } from "react-redux";
 
 
 const Sidebar = () => {
+    const navigate = useNavigate();
+    const user = useSelector(state => state.userData.user);
+
+    const logOut = () => {
+        localStorage.clear();
+        navigate('/');
+    }
+
     return (
         <div className='sidebar'>
             <div className="container">
                 <div className="menu">
                     <div className="item">
-                        <HomeIcon /> <span>Home</span>
+                        <NavLink
+                            className = {({ isActive }) =>
+                                isActive ? 'active-style' : 'inactive-style'
+                            }
+                            to={'/home'} >
+                            <HomeIcon /> <span>Home</span>
+                        </NavLink>
                     </div>
                     <div className="item">
                         <ExploreIcon /> <span>Explore</span>
@@ -31,14 +47,20 @@ const Sidebar = () => {
                         <SettingsIcon /> <span>Settings</span>
                     </div>
                     <div className="item">
-                        <div className="user">
-                            <div>
-                                <Avatar src={User} sx={{width:'24px', height: '24px'}}/>
+                        <NavLink
+                            className = {({ isActive }) =>
+                                isActive ? 'active-style' : 'inactive-style'
+                            }
+                            to={`/profile/${user?.username}`} >
+                            <div className="user">
+                                <div>
+                                    <Avatar src={User} sx={{ width: '24px', height: '24px' }} />
+                                </div>
+                                <span>Profile</span>
                             </div>
-                            <span>Profile</span>
-                        </div>
+                        </NavLink>
                     </div>
-                    <div className="item">
+                    <div className="item" onClick={logOut}>
                         <LogoutIcon /> <span>Logout</span>
                     </div>
                 </div>

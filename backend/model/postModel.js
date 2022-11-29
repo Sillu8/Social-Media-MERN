@@ -8,13 +8,21 @@ const postSchema = mongoose.Schema({
     desc: {
         type: String,
     },
+    userName: {
+        type: String,
+    },
+    userProfilePic: {
+        type: String,
+    },
     images: {
-        type: [String],
+        type: String,
+    },
+    cloudinary_id: {
+        type: String,
     },
     likes: {
-        type: [mongoose.Schema.Types.ObjectId],
-        ref: 'User',
-        default: [],
+        type: Object,
+        default: {},
     },
     comments: {
         type: [mongoose.Schema.Types.ObjectId],
@@ -24,7 +32,14 @@ const postSchema = mongoose.Schema({
     location: {
         type: String,
     },
-    tags: [String],
+    tags: {
+        type: [String],
+        default: [],
+    },
+    saves: {
+        type: Object,
+        default: {},
+    }
 }, {timestamps: true});
 
 module.exports = mongoose.model('Post',postSchema);

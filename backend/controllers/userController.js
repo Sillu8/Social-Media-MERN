@@ -115,6 +115,22 @@ const getUser = asyncHandler(async (req,res)=>{
 })
 
 
+//@desc Get suggestions for user
+//@route GET /api/v1/user/suggestions
+//@access private
+const suggestions = asyncHandler(async (req,res) => {
+    const userId = req.userId;
+    const data = await User.find({_id: {$not: {$eq: userId}}},{name:1,username:1,profilePic:1}).limit(5);
+    res.status(200).json({
+        status: 'success',
+        results: data.length,
+        data: {
+            data
+        }
+    })
+})
+
+
 
 
 const generateToken = (id) => {
@@ -127,4 +143,5 @@ module.exports = {
     getUser, 
     login,
     signup,
+    suggestions,
 }

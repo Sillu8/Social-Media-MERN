@@ -1,0 +1,33 @@
+.profile {
+
+    .container {
+        padding: 20px;
+
+
+        .options {
+            border-top: 1px solid rgb(184, 181, 181);
+            margin-top: 20px;
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+
+            a {
+                text-decoration: none;
+            }
+            
+            .active-link {
+                color: black;
+                font-weight: bold;
+                border-top: 2px solid black;
+            }
+            .non-active-link {
+                color: gray;
+            }
+
+            .option {
+                margin-top: 3px;
+                cursor: pointer;
+            }
+        }
+    }
+}

@@ -4,29 +4,85 @@ import postPic2 from '../images/birds.jpg'
 export const PostData = [
     {
         img: postPic1,
-        name: 'Beach',
+        name: 'Shamil',
         desc: 'Happy New Year',
         likes: 2000,
-        liked: true
+        liked: true,
+        saved: false,
     },
     {
         img: postPic2,
-        name: 'Birds',
+        name: 'Messi',
         desc: 'Nice Birds',
         likes: 2122,
-        liked: false
+        liked: false,
+        saved: true
     }
 ]
 
-export const FollowersData = [
+
+export const comments = [
     {
+        profilePic: postPic1,
         name: 'Shamil',
-        username: 'shamil8',
-        img: postPic1,
+        desc: 'Happy New Year',
+        userId: 1,
     },
     {
-        name: 'Leo Messi',
-        username: 'leomessi',
-        img: postPic2,
+        profilePic: postPic2,
+        name: 'Messi',
+        desc: 'Lorem ipsum, dolor sit amet consectetur adipisicing elit. Suscipit fugiat repellendus sequi mollitia asperiores nemo labore necessitatibus architecto esse, et, odit maiores quia vel veniam iure non sit iusto eius?',
+        userId: 2,
+    }
+]
+
+export const userPosts = [
+    {
+        profilePic: postPic1,
+        name: 'Shamil',
+        desc: 'Happy New Year',
+        userId: 1,
     },
+    {
+        profilePic: postPic2,
+        name: 'Messi',
+        desc: 'Lorem ipsum, dolor sit amet consectetur adipisicing elit. Suscipit fugiat repellendus sequi mollitia asperiores nemo labore necessitatibus architecto esse, et, odit maiores quia vel veniam iure non sit iusto eius?',
+        userId: 2,
+    },
+    {
+        profilePic: postPic1,
+        name: 'Shamil',
+        desc: 'Happy New Year',
+        userId: 1,
+    },
+    {
+        profilePic: postPic2,
+        name: 'Messi',
+        desc: 'Lorem ipsum, dolor sit amet consectetur adipisicing elit. Suscipit fugiat repellendus sequi mollitia asperiores nemo labore necessitatibus architecto esse, et, odit maiores quia vel veniam iure non sit iusto eius?',
+        userId: 2,
+    },
+    {
+        profilePic: postPic1,
+        name: 'Shamil',
+        desc: 'Happy New Year',
+        userId: 1,
+    },
+    {
+        profilePic: postPic2,
+        name: 'Messi',
+        desc: 'Lorem ipsum, dolor sit amet consectetur adipisicing elit. Suscipit fugiat repellendus sequi mollitia asperiores nemo labore necessitatibus architecto esse, et, odit maiores quia vel veniam iure non sit iusto eius?',
+        userId: 2,
+    },
+    {
+        profilePic: postPic1,
+        name: 'Shamil',
+        desc: 'Happy New Year',
+        userId: 1,
+    },
+    {
+        profilePic: postPic2,
+        name: 'Messi',
+        desc: 'Lorem ipsum, dolor sit amet consectetur adipisicing elit. Suscipit fugiat repellendus sequi mollitia asperiores nemo labore necessitatibus architecto esse, et, odit maiores quia vel veniam iure non sit iusto eius?',
+        userId: 2,
+    }
 ]

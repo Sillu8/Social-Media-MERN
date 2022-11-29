@@ -1,9 +1,12 @@
-import { Avatar } from '@mui/material';
 import React from 'react';
 import './stories.scss';
 import User from '../../images/birds.jpg'
+import { useSelector } from 'react-redux';
 
 const Stories = () => {
+
+    const user = useSelector(state => state.userData.user);
+
     const stories = [
         {
             id: 10,
@@ -34,13 +37,13 @@ const Stories = () => {
 
         <div className="story">
             <img src={User} alt="" />
-            <span>John Doe</span>
+            <span>{user?.username}</span>
             <button>+</button>
         </div>
         {
           stories.map(story => {
             return (
-                <div className="story">
+                <div className="story" key={story.id}>
                     <img src={story.img} alt='story'/>
                     <span>{story.name}</span>
                 </div>

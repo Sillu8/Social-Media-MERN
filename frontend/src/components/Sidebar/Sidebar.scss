@@ -4,7 +4,7 @@
     top: 80px;
     height: calc(100vh - 80px);
     overflow: scroll;
-    
+
 
     &::-webkit-scrollbar {
         display: none;
@@ -13,18 +13,47 @@
 
     .container {
         padding: 20px;
-        
+
 
         .menu {
 
             display: flex;
             flex-direction: column;
             gap: 30px;
+            width: 200px;
+            font-weight: bold;
+            cursor: pointer;
+
+            .active-style {
+                width: 200px;
+                padding: 7px 0px;
+                color: black;
+                text-decoration: none;
+                box-shadow: 0 0.5em 0.5em -0.4em #90e5ff;
+                pointer-events: none;
+            }
+
+            .inactive-style {
+                text-decoration: none;
+                color: black;
+            }
+
+
 
             .item {
                 display: flex;
                 align-items: center;
                 gap: 10px;
+                transition: 0.4s;
+                padding: 10px;
+                border-radius: 5px;
+                text-decoration: none;
+
+                &:hover,
+                &:focus {
+                    box-shadow: 0 0.5em 0.5em -0.4em #90e5ff;
+                    transform: translateY(-0.25em);
+                }
 
                 .user {
                     display: flex;

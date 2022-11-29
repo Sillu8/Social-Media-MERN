@@ -1,9 +1,12 @@
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
-import {loadSlice} from "./loading/loadSlice";
+import { userSlice } from "./auth/userSlice";
+import { loadSlice } from "./loading/loadSlice";
+
 
 
 const rootReducer = combineReducers({
     alerts: loadSlice.reducer,
+    userData: userSlice.reducer,
 });
 
 export const store = configureStore({

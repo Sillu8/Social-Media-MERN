@@ -1,9 +1,39 @@
 import React from 'react'
 import './Suggestions.scss'
-import { FollowersData } from '../PostData'
+import { useEffect } from 'react'
+import { API_USER } from '../../axios'
+import { useState } from 'react'
+import { Avatar } from '@mui/material'
 
 const Suggestions = () => {
+
+    const [suggestions, setSuggestions] = useState([]);
+
+    useEffect(() => {
+        (async () => {
+            try {
+                const response = await API_USER.get('/suggestions')
+                if (response.data.status === 'success') {
+                    setSuggestions(response.data.data.data);
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        })();
+    }, [])
+
+    const followUser = async (id) => {
+        try {
+            // const response = await API_USER.put('/',{id});
+            console.log('response');
+        } catch (error) {
+
+        }
+    }
+
     return (
+
+        
         <div className='Suggestions'>
             <div className='header'>
                 <h5>Suggestions for you</h5>
@@ -12,17 +42,17 @@ const Suggestions = () => {
 
             <div>
                 {
-                    FollowersData.map((follower, id) => {
+                    suggestions.map((suggestion) => {
                         return (
-                            <div className="follower">
+                            <div className="follower" key={suggestion?.id}>
                                 <div className="">
-                                    <img src={follower.img} alt="" className='followerImg'/>
+                                    <Avatar src={suggestion?.profilePic}/>
                                     <div className="name">
-                                        <span>{follower.name}</span>
-                                        <span>{follower.username}</span>
+                                        <span>{suggestion?.name}</span>
+                                        <span>{suggestion?.username}</span>
                                     </div>
                                 </div>
-                                <button>Follow</button>
+                                <button onClick={()=>followUser(suggestion?._id)}>Follow</button>
                             </div>
                         )
                     })

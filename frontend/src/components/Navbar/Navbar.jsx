@@ -7,10 +7,12 @@ import { Link } from 'react-router-dom'
 import Search from '../Search/Search';
 import { Avatar } from '@mui/material';
 import User from '../../images/beach.jpg'
+import { useSelector } from 'react-redux';
 
 const Navbar = () => {
 
-    const isDark = false
+    const user = useSelector(state => state.userData.user);
+    const isDark = false;
 
     return (
         <div className='navbar'>
@@ -22,13 +24,15 @@ const Navbar = () => {
 
             </div>
             <div className="right">
-                {isDark ? <Brightness7Icon /> : <DarkModeIcon />}
+                {isDark ? <Brightness7Icon sx={{cursor:'pointer'}}/> : <DarkModeIcon sx={{cursor:'pointer'}}/>}
                 <div className="search">
                     <Search />
                 </div>
                 <div className="user">
-                    <Avatar src={User}/>
-                    <span>John Doe</span>
+                    <Avatar src={User} sx={{cursor:'pointer', width:'30px', height:'30px'}}/>
+                    <span style={{cursor:'pointer'}}>{
+                        user?.name?.split(' ')[0]
+                    }</span>
                 </div>
             </div>
         </div>
