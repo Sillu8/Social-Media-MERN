@@ -1,6 +1,7 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { Route, Routes } from 'react-router-dom'
+import { fetchUserData } from '../../redux/auth/userSlice'
 import Auth from '../Auth/Auth'
 import Home from '../Home/Home'
 import ProfilePage from '../ProfilePage/ProfilePage'
@@ -8,8 +9,12 @@ import PrivateRoute from './PrivateRoute'
 import PublicRoute from './PublicRoute'
 
 const UserRoutes = () => {
-
-    const user = useSelector(state => state.userData.user);
+    // const dispatch = useDispatch();
+    const { user } = useSelector(state => state.userData);
+    // const token = localStorage.getItem('token');
+    // if(token){
+    //     dispatch(fetchUserData(token))
+    // }
 
     return (
         <>
@@ -25,6 +30,16 @@ const UserRoutes = () => {
                     </PrivateRoute>
                 } />
                 <Route path={`/profile/${user?.username}`} element={
+                    <PrivateRoute>
+                        <ProfilePage />
+                    </PrivateRoute>
+                } />
+                <Route path={`/profile/${user?.username}/saved`} element={
+                    <PrivateRoute>
+                        <ProfilePage />
+                    </PrivateRoute>
+                } />
+                <Route path={`/profile/${user?.username}/tagged`} element={
                     <PrivateRoute>
                         <ProfilePage />
                     </PrivateRoute>

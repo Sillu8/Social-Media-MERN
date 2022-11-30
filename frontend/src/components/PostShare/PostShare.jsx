@@ -12,6 +12,7 @@ import { API_POST } from '../../axios';
 import { hideLoading, showLoading } from '../../redux/loading/loadSlice';
 import toast from 'react-hot-toast';
 import { Box } from '@mui/system';
+import { fetchUserData } from '../../redux/auth/userSlice';
 // import FileBase from 'react-file-base64';
 
 const PostShare = () => {
@@ -60,8 +61,10 @@ const PostShare = () => {
       dispatch(showLoading());
       handleClose();
       const response = await API_POST.post('/', {...formData})
+      console.log(response);
       dispatch(hideLoading());
       setFormData(null);
+      dispatch(fetchUserData(localStorage.getItem('token')))
       if (response.data.status === 'success') {
         toast.success(response.data.message);
       }else{
@@ -110,7 +113,7 @@ const PostShare = () => {
                   <TextField size='small' sx={{ marginBottom: '20px', color: 'white', }} fullWidth label='Description' value={formData.desc} onChange={(e) => setFormData({ ...formData, desc: e.target.value })} />
                   {/* <TextField size='small' fullWidth label='Tags' value={formData.tags} onChange={(e) => setFormData({...formData, tags : e.target.value})}/> */}
                   <div className="fileInput">
-                    <TextField type='file' multiple={false} onChange={imageChange} />
+                    <TextField type='file' multiple={false} onChange={imageChange} required/>
                   </div>
                   {/* <div className="previewImage">
                     <img src={image.image} alt='' /> 

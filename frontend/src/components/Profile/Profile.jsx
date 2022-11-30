@@ -4,14 +4,16 @@ import './profile.scss'
 import GridOnIcon from '@mui/icons-material/GridOn';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
-// import { useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import UserPosts from '../UserPosts/UserPosts';
 import { NavLink } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 
 const Profile = () => {
-    // const location = useLocation()
-
+    const location = useLocation()
+    console.log(location.pathname);
+    const user = useSelector(state => state.userData.user);
 
     return (
         <div className='profile'>
@@ -19,7 +21,7 @@ const Profile = () => {
                 <UserInfo />
                 <div className="options">
                     <NavLink
-                        to={'/profile'}
+                        end to={`/profile/${user?.username}`}
                         className={({ isActive }) =>
                             isActive ? 'active-link' : 'non-active-link'
                         }
@@ -29,7 +31,7 @@ const Profile = () => {
                         </div>
                     </NavLink>
                     <NavLink
-                        to={'/profile/saved'}
+                        to={`/profile/${user?.username}/saved`}
                         className={({ isActive }) =>
                             isActive ? 'active-link' : 'non-active-link'
                         }
@@ -39,7 +41,7 @@ const Profile = () => {
                         </div>
                     </NavLink>
                     <NavLink
-                        to={'/profile/tagged'}
+                        to={`/profile/${user?.username}/tagged`}
                         className={({ isActive }) =>
                             isActive ? 'active-link' : 'non-active-link'
                         }
@@ -49,6 +51,7 @@ const Profile = () => {
                         </div>
                     </NavLink>
                 </div>
+                
                 <UserPosts />
             </div>
         </div>

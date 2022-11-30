@@ -21,8 +21,9 @@ const postSchema = mongoose.Schema({
         type: String,
     },
     likes: {
-        type: Object,
-        default: {},
+        type: [mongoose.Schema.Types.ObjectId],
+        ref: 'User',
+        default: [],
     },
     comments: {
         type: [mongoose.Schema.Types.ObjectId],
@@ -38,7 +39,7 @@ const postSchema = mongoose.Schema({
     },
     saves: {
         type: Object,
-        default: {},
+        default: [],
     }
 }, {timestamps: true});
 

@@ -23,17 +23,17 @@ const userSchema = mongoose.Schema({
     },
     requests: {
         type: [mongoose.Schema.Types.ObjectId],
-        ref: 'user',
+        ref: 'User',
         default: null
     },
     following: {
         type: [mongoose.Schema.Types.ObjectId],
-        ref: 'user',
+        ref: 'User',
         default: null,
     },
     followers: {
         type: [mongoose.Schema.Types.ObjectId],
-        ref: 'user',
+        ref: 'User',
         default: null,
     },
     profilePic: {
@@ -74,8 +74,13 @@ const userSchema = mongoose.Schema({
     },
     posts: {
         type: [mongoose.Schema.Types.ObjectId],
-        ref: 'post',
+        ref: 'Post',
     },
+    savedPosts: {
+        type: [mongoose.Schema.Types.ObjectId],
+        ref: 'Post',
+        default: [],
+    }
 },{timestamps: true})
 
 module.exports = mongoose.model('User', userSchema);

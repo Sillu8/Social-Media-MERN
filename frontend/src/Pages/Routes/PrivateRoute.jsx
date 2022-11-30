@@ -1,24 +1,21 @@
 import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux';
+import { useLocation, useNavigate } from 'react-router-dom'
 import { fetchUserData } from '../../redux/auth/userSlice'
 
 
 
 const PrivateRoute = ({ children }) => {
     const navigate = useNavigate();
-    const dispatch = useDispatch();
     const token = localStorage.getItem('token')
+    const location = useLocation();
 
-    useEffect(() => {
-        if (!localStorage.getItem('token')) {
-            navigate('/');
-        }else{
-            dispatch(fetchUserData(token));
-        }
-        //eslint-disable-next-line
-    },[])
-    return children;
+
+    if (!token) {
+        navigate('/');
+    }else{
+        return children;    
+    }
 }
 
 export default PrivateRoute

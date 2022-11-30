@@ -6,9 +6,9 @@ const PublicRoute = ({children}) => {
 
     useEffect(() => {
         if (localStorage.getItem('token')) {
-            navigate('/home');
+            return navigate('/home');
         }
-    })
+    },[])
     return children;
 }
 

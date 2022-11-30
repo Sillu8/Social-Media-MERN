@@ -12,7 +12,6 @@ const Posts = () => {
   const dispatch = useDispatch();
   const [posts, setPosts] = useState([])
   const user = useSelector(state => state.userData.user);
-
   useEffect(() => {
 
     (async () => {
