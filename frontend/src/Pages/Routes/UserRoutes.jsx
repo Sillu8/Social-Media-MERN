@@ -1,7 +1,6 @@
 import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { Route, Routes } from 'react-router-dom'
-import { fetchUserData } from '../../redux/auth/userSlice'
 import Auth from '../Auth/Auth'
 import Home from '../Home/Home'
 import ProfilePage from '../ProfilePage/ProfilePage'
@@ -9,13 +8,8 @@ import PrivateRoute from './PrivateRoute'
 import PublicRoute from './PublicRoute'
 
 const UserRoutes = () => {
-    // const dispatch = useDispatch();
     const { user } = useSelector(state => state.userData);
-    // const token = localStorage.getItem('token');
-    // if(token){
-    //     dispatch(fetchUserData(token))
-    // }
-
+    
     return (
         <>
             <Routes>

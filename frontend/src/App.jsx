@@ -16,6 +16,7 @@ function App() {
     if(!user){
       dispatch(fetchUserData(token));
     }
+  // eslint-disable-next-line
   }, [user])
   
   const { loading } = useSelector(state => state.alerts);
@@ -25,7 +26,7 @@ function App() {
       <div><Toaster /></div>
       <Router>
         {loading && (<div className="spinner-parent">
-          <div class="spinner-border" role="status"></div>
+          <div className="spinner-border" role="status"></div>
         </div>)}
         <Routes>
           <Route path='/*' element={<UserRoutes />} />

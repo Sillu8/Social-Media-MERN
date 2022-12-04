@@ -2,15 +2,30 @@
 
     .write{
         display: flex;
-        justify-content: space-between;
+        margin: 20px 10px;
         align-items: center;
-        margin: 10px 10px;
+
+        form{
+            display: flex;
+            width: 100%;
+            padding: 5px 10px;
+            justify-content: space-around;
+        }
+
+        input{
+            width: 80%;
+        }
+        span{
+            color: red;
+        }
     }
 
     .comment{
-        margin: 30px 0px;
+        margin: 20px 0px;
+        border-bottom: 0.5px solid rgb(241, 239, 239);
         display: flex;
         justify-content: space-between;
+        padding: 0px 30px;
 
         .comment-info{
             flex: 5;

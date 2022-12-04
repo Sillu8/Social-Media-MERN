@@ -13,30 +13,33 @@ import Comments from '../Comments/Comments';
 import toast from 'react-hot-toast';
 import moment from "moment";
 import { POSTS } from '../../axios';
-import { useEffect } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUserData } from '../../redux/auth/userSlice';
 
 const Post = ({ data, id }) => {
 
     const [post, setPost] = useState(data);
-    const likeCount = data?.likes?.length;
-    const commentCount = data?.comments?.length;
+    let likeCount = post?.likes?.length;
+    let commentCount = post?.comments?.length;
     const [showComments, setShowComments] = useState(false);
     const { user } = useSelector(state => state.userData);
     const dispatch = useDispatch()
-    
-    //Like or Dislike Post
+
+    //Like Post
     const like = async () => {
         try {
             const response = await POSTS.patch(`/${post._id}/like`);
-            toast.success(response.data.message);
-            if (response.data.message === 'liked') {
-                setPost({ ...post }, post?.likes?.push(id));
-            } else {
-                const index = post?.likes?.indexOf(id);
-                setPost({ ...post }, post?.likes?.splice(index, 1));
-            }
+            setPost(response.data.post);
+        } catch (error) {
+            toast.error('Some unknown error!')
+        }
+    }
+
+    //Dislike Post
+    const dislike = async () => {
+        try {
+            const response = await POSTS.patch(`/${post._id}/unlike`);
+            setPost(response.data.post);
         } catch (error) {
             toast.error('Some unknown error!')
         }
@@ -46,13 +49,19 @@ const Post = ({ data, id }) => {
     //Save and unsave post
     const save = async () => {
         try {
-            const response = await POSTS.patch(`/${post._id}/save`);
-            toast.success(response.data.message);
-            if(response.data.message === 'saved'){
-                user?.savedPosts?.push()
-            }
+            await POSTS.patch(`/${post._id}/save`);
+            dispatch(fetchUserData(localStorage.getItem('token')));
         } catch (error) {
             toast.error('Some unknown error!')
+        }
+    }
+
+
+    const postComments = async () => {
+        try {
+            setShowComments(!showComments);
+        } catch (error) {
+            toast.error(error.response.data.message);
         }
     }
 
@@ -81,11 +90,11 @@ const Post = ({ data, id }) => {
                     <div className="info-left">
                         <div className="item">
                             {
-                                post?.likes?.includes(id) ? <FavoriteIcon sx={{ color: 'red' }} onClick={like} /> : <FavoriteBorderOutlinedIcon onClick={like} />
+                                post?.likes?.includes(id) ? <FavoriteIcon sx={{ color: 'red' }} onClick={dislike} /> : <FavoriteBorderOutlinedIcon onClick={like} />
                             }
                             <span>{`${likeCount} like${likeCount <= 1 ? '' : 's'}`}</span>
                         </div>
-                        <div className="item" onClick={() => setShowComments(!showComments)}>
+                        <div className="item" onClick={postComments}>
                             <CommentIcon />
                             <span>{`${commentCount} comment${commentCount <= 1 ? '' : 's'}`}</span>
                         </div>
@@ -103,7 +112,7 @@ const Post = ({ data, id }) => {
                 </div>
                 {
                     showComments &&
-                    <Comments data={post?.comments} />
+                    <Comments data={post?.comments} id={post?._id} />
                 }
             </div>
         </div>

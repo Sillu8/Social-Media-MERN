@@ -2,21 +2,18 @@ import React, { useEffect, useState } from 'react'
 import './PostShare.scss'
 import CollectionsIcon from '@mui/icons-material/Collections';
 import SlowMotionVideoIcon from '@mui/icons-material/SlowMotionVideo';
-// import CloseIcon from '@mui/icons-material/Close';
 import PlaceIcon from '@mui/icons-material/Place';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import { Avatar, Button, Container, Modal, TextField, Typography } from '@mui/material'
-// import { useRef } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { API_POST } from '../../axios';
 import { hideLoading, showLoading } from '../../redux/loading/loadSlice';
 import toast from 'react-hot-toast';
 import { Box } from '@mui/system';
-import { fetchUserData } from '../../redux/auth/userSlice';
-// import FileBase from 'react-file-base64';
 
-const PostShare = () => {
-  const user = useSelector(state => state.userData.user)
+const PostShare = ({data}) => {
+  const {posts, setPosts} = data;
+  const user = useSelector(state => state.userData.user);
   const dispatch = useDispatch();
   const [image, setImage] = useState({});
   const [open, setOpen] = useState(false);
@@ -61,21 +58,17 @@ const PostShare = () => {
       dispatch(showLoading());
       handleClose();
       const response = await API_POST.post('/', {...formData})
-      console.log(response);
       dispatch(hideLoading());
-      setFormData(null);
-      dispatch(fetchUserData(localStorage.getItem('token')))
       if (response.data.status === 'success') {
         toast.success(response.data.message);
-      }else{
-        toast.error(response.data.message);
+        setPosts([response.data.post,...posts]);
       }
     } catch (error) {
-      console.log(error);
       dispatch(hideLoading());
-      toast.error('some unknown error')
+      toast.error(error.response.data.message)
     }
   }
+
 
 
   return (
@@ -115,31 +108,11 @@ const PostShare = () => {
                   <div className="fileInput">
                     <TextField type='file' multiple={false} onChange={imageChange} required/>
                   </div>
-                  {/* <div className="previewImage">
-                    <img src={image.image} alt='' /> 
-                  </div> */}
                   <Button sx={{ marginTop: '20px' }} variant='contained' type='submit'>POST</Button>
                 </form>
               </Box>
             </Modal>
-
-
-            {/* <div style={{ display: 'none' }}>
-              <input type="file" name="myImage" ref={imageRef} onChange={imageChange} />
-            </div> */}
           </div>
-          {/* {
-            image &&
-            <div className="newPost">
-              <form onSubmit={handleSubmit}>
-                <div className="previewImage">
-                  <CloseIcon onClick={() => { setImage(null); setCaption('') }} />
-                  <img src={image.image} alt='' />
-                </div>
-                <Button variant='contained'>POST</Button>
-              </form>
-            </div>
-          } */}
         </div>
       </div>
     </Container>

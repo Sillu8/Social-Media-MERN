@@ -15,7 +15,7 @@ const { default: mongoose } = require("mongoose");
 // @access  Private
 const allPosts = asyncHandler(async (req, res) => {
     const userId = req.userId;
-    const posts = await Post.find({}).limit(5).sort({createdAt: "desc"});
+    const posts = await Post.find({}).limit(5).sort({ createdAt: "desc" });
     res.status(200).json({
         status: 'success',
         result: posts.length,
@@ -33,22 +33,36 @@ const newPost = asyncHandler(async (req, res) => {
     const { tags, desc } = req.body;
     const userID = req.userId;
     const user = await User.findOne({ _id: userID });
-    const result = await cloudinary.uploader.upload(req.file.path,{folder:'posts'});
-    const response = await Post.create({
-        userID,
-        userName: user.name,
-        userProfilePic: user.profilePic,
-        desc,
-        tags,
-        images: result.secure_url,
-        cloudinary_id: result.public_id,
-    });
-    user.posts.push(response._id);
-    await user.save();
-    res.status(200).json({
-        status: 'success',
-        message: 'Your post is uploaded.'
-    })
+    try {
+        const result = await cloudinary.uploader.upload(req.file?.path, { folder: 'posts' });
+        const post = await Post.create({
+            userID,
+            userName: user.name,
+            userProfilePic: user.profilePic,
+            desc,
+            tags,
+            images: result.secure_url,
+            cloudinary_id: result.public_id,
+        });
+        user.posts.push(post._id);
+        const userData = await user.save();
+
+        res.status(200).json({
+            status: 'success',
+            message: 'Your post is uploaded.',
+            post,
+        })
+
+    } catch (error) {
+        console.log(error);
+        if (error.message) {
+            res.status(400)
+            throw new Error(error.message)
+        } else {
+            res.status(400)
+            throw new Error('Please check your network connection')
+        }
+    }
 })
 
 
@@ -58,7 +72,7 @@ const newPost = asyncHandler(async (req, res) => {
 // @access  Private
 const userPosts = asyncHandler(async (req, res) => {
     const userId = req.userId;
-    const posts = await Post.find({userID: userId}).sort({createdAt: "desc"});
+    const posts = await Post.find({ userID: userId }).sort({ createdAt: "desc" });
     res.status(200).json({
         status: 'success',
         result: posts.length,
@@ -73,23 +87,39 @@ const userPosts = asyncHandler(async (req, res) => {
 // @route GET /api/v1/post/:id/like
 // @access  Private
 const likePost = asyncHandler(async (req, res) => {
-    const userID = req.userId;
-    const id  = req.params.id;
 
-    if(!mongoose.Types.ObjectId.isValid(id)) throw new Error('No post with this id!');
-    let message;
-    const post = await Post.findById(id);
-    if(post.likes.includes(userID)){
-        post.likes.pull(userID);
-        message = 'unsaved';        
-    }else{
-        post.likes.push(userID);
-        message = 'saved';        
-    }
-    await post.save();
+    const userID = req.userId;
+    const postId = req.params.id;
+    if (!mongoose.Types.ObjectId.isValid(postId)) throw new Error('No post with this id!');
+    const post = await Post.findByIdAndUpdate(postId, {
+        $push: {
+            likes: userID
+        }
+    }, { new: true });
     res.status(200).json({
         status: 'success',
-        message,
+        post,
+    })
+
+})
+
+
+// @desc Unlike a post
+// @route GET /api/v1/post/:id/unlike
+// @access  Private
+const unlikePost = asyncHandler(async (req, res) => {
+    const userID = req.userId;
+    const postId = req.params.id;
+
+    if (!mongoose.Types.ObjectId.isValid(postId)) throw new Error('No post with this id!');
+    const post = await Post.findByIdAndUpdate(postId, {
+        $pull: {
+            likes: userID
+        }
+    }, { new: true });
+    res.status(200).json({
+        status: 'success',
+        post,
     })
 })
 
@@ -102,23 +132,57 @@ const savePost = asyncHandler(async (req, res) => {
     const userID = req.userId;
     const postId = req.params.id;
 
-    if(!mongoose.Types.ObjectId.isValid(postId)) throw new Error('No post with this id!');
+    if (!mongoose.Types.ObjectId.isValid(postId)) throw new Error('No post with this id!');
 
     const user = await User.findById(userID);
-    let message; 
-    if(user.savedPosts.includes(postId)){
+    let message;
+    if (user.savedPosts.includes(postId)) {
         user.savedPosts.pull(postId);
-        message='unsaved';
-    }else{
+        message = 'unsaved';
+    } else {
         user.savedPosts.push(postId);
-        message='saved';
+        message = 'saved';
     }
     await user.save();
     res.status(200).json({
         status: 'success',
         message,
     })
-})
+});
+
+
+
+
+// @desc Add a new comment
+// @route GET /api/v1/post/:id/comment
+// @access  Private
+const addComment = asyncHandler(async (req, res) => {
+    const userID = req.userId;
+    const postId = req.params.id;
+    const { Comment } = req.body;
+    const time = new Date().toISOString();
+
+    if (!mongoose.Types.ObjectId.isValid(postId)) throw new Error('No post with this id!');
+
+    const { username, profilePic } = await User.findById(userID, { username: 1, profilePic: 1 });
+    const post = await Post.findByIdAndUpdate(postId, {
+        $push: {
+            comments: {
+                commentedUserId: userID,
+                commentedUsername: username,
+                commentedUserpic: profilePic,
+                comment: Comment,
+                time,
+            }
+        }
+    }, { new: true })
+
+    const length = post.comments.length;
+    res.status(200).json({
+        status: 'success',
+        comment: post.comments[length - 1]
+    })
+});
 
 
 module.exports = {
@@ -127,4 +191,6 @@ module.exports = {
     userPosts,
     likePost,
     savePost,
+    addComment,
+    unlikePost
 }

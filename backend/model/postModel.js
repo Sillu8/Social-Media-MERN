@@ -16,20 +16,40 @@ const postSchema = mongoose.Schema({
     },
     images: {
         type: String,
+        required: [true,'No image'],
     },
     cloudinary_id: {
         type: String,
+        required: true,
     },
     likes: {
         type: [mongoose.Schema.Types.ObjectId],
         ref: 'User',
         default: [],
     },
-    comments: {
-        type: [mongoose.Schema.Types.ObjectId],
-        ref: 'User',
-        default: [],
-    },
+    comments: [{
+        commentedUserId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User',
+            required: true,
+        },
+        commentedUsername: {
+            type: String,
+            required: true,
+        },
+        commentedUserpic: {
+            type: String,
+            required: true,
+        },
+        comment: {
+            type: String,
+            required: true,
+        },
+        time: {
+            type: Date,
+            required: true,
+        }
+    }],
     location: {
         type: String,
     },
@@ -41,6 +61,6 @@ const postSchema = mongoose.Schema({
         type: Object,
         default: [],
     }
-}, {timestamps: true});
+}, { timestamps: true });
 
-module.exports = mongoose.model('Post',postSchema);
+module.exports = mongoose.model('Post', postSchema);

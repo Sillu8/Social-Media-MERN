@@ -1,15 +1,12 @@
-import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 const PublicRoute = ({children}) => {
     const navigate = useNavigate();
-
-    useEffect(() => {
-        if (localStorage.getItem('token')) {
-            return navigate('/home');
-        }
-    },[])
-    return children;
+    if (localStorage.getItem('token')) {
+        return navigate('/home');
+    }else{
+        return children;
+    }
 }
 
 export default PublicRoute

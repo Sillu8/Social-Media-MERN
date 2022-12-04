@@ -1,16 +1,16 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import './Posts.scss'
 import Post from '../Post/Post'
 import toast from 'react-hot-toast'
 import { POSTS } from '../../axios'
 import { useDispatch, useSelector } from 'react-redux'
 import { hideLoading, showLoading } from '../../redux/loading/loadSlice'
-import { useState } from 'react'
+import PostShare from '../PostShare/PostShare'
 
 const Posts = () => {
 
-  const dispatch = useDispatch();
   const [posts, setPosts] = useState([])
+  const dispatch = useDispatch();
   const user = useSelector(state => state.userData.user);
   useEffect(() => {
 
@@ -19,12 +19,12 @@ const Posts = () => {
         dispatch(showLoading());
         const response = await POSTS.get('/');
         dispatch(hideLoading());
-        if(response.data.status === 'success'){
+        if (response.data.status === 'success') {
           setPosts(response.data.data.posts);
         }
       } catch (error) {
         dispatch(hideLoading());
-        toast.error('Some unknown error!')
+        toast.error('Please login again!')
       }
     })();
 
@@ -36,13 +36,16 @@ const Posts = () => {
 
 
   return (
-    <div className='Posts'>
-      {
-        posts.map((post) => {
-          return <Post data={post} id={user?._id}/>
-        })
-      }
-    </div>
+    <>
+      <PostShare data={{ posts, setPosts }} />
+      <div className='Posts'>
+        {
+          posts?.map((post) => {
+            return <div key={post?._id}><Post data={post} id={user?._id} /></div>
+          })
+        }
+      </div>
+    </>
   )
 }
 
