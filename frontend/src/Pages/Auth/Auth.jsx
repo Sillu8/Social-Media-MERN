@@ -31,7 +31,6 @@ const Auth = () => {
                         dispatch(hideLoading());
                         toast.success('redirecting to login page...');
                         switchMode();
-                        setFormData({...formData,password: ''})
                     }
                 } catch (error) {
                     dispatch(hideLoading());
@@ -44,6 +43,7 @@ const Auth = () => {
                 try {
                     dispatch(showLoading())
                     const response = await API.post('/user/login', formData);
+                    console.log(response);
                     if (response.data.status === 'success') {
                         dispatch(hideLoading());
                         toast.success('Welcome');

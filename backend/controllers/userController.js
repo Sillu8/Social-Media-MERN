@@ -72,7 +72,7 @@ const login = asyncHandler(async (req, res) => {
         throw new Error('Please enter all the fields.')
     }
 
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email }).select('+password');
     if (user && await bcrypt.compare(password, user.password)) {
         res.status(200).json({
             status: 'success',
