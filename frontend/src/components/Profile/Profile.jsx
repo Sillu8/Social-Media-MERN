@@ -4,15 +4,12 @@ import './profile.scss'
 import GridOnIcon from '@mui/icons-material/GridOn';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
-import { useLocation } from 'react-router-dom';
 import UserPosts from '../UserPosts/UserPosts';
 import { NavLink } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 
 const Profile = () => {
-    const location = useLocation()
-    console.log(location.pathname);
     const user = useSelector(state => state.userData.user);
 
     return (

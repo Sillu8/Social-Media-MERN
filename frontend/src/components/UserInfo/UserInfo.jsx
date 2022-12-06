@@ -6,7 +6,6 @@ import { useSelector } from 'react-redux';
 
 const UserInfo = () => {
     const user = useSelector(state => state.userData.user);
-    console.log(user);
     return (
         <div className="ProfileData">
             <div className="profilePic">

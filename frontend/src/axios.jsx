@@ -37,3 +37,27 @@ POSTS.interceptors.request.use(
         return config;
     }
 )
+
+
+export const CONVERSATION = axios.create({
+    baseURL: 'http://localhost:4000/api/v1/conversation',
+})
+
+CONVERSATION.interceptors.request.use(
+    config => {
+        config.headers['Authorization'] = `Bearer ${localStorage.getItem('token')}`;
+        return config;
+    }
+)
+
+
+export const MESSAGE_API = axios.create({
+    baseURL: 'http://localhost:4000/api/v1/message',
+})
+
+MESSAGE_API.interceptors.request.use(
+    config => {
+        config.headers['Authorization'] = `Bearer ${localStorage.getItem('token')}`;
+        return config;
+    }
+)

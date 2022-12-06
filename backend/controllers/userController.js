@@ -180,7 +180,7 @@ const unfollowUser = asyncHandler(async (req, res) => {
 
 
 const generateToken = (id) => {
-    token = jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '4h' });
+    token = jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '1d' });
     return token;
 }
 

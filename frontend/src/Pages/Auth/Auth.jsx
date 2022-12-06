@@ -43,7 +43,6 @@ const Auth = () => {
                 try {
                     dispatch(showLoading())
                     const response = await API.post('/user/login', formData);
-                    console.log(response);
                     if (response.data.status === 'success') {
                         dispatch(hideLoading());
                         toast.success('Welcome');
