@@ -9,14 +9,17 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import SettingsIcon from '@mui/icons-material/Settings';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { clearUser } from '../../redux/auth/userSlice';
 
 
 const Sidebar = () => {
     const navigate = useNavigate();
     const user = useSelector(state => state.userData.user);
+    const dispatch = useDispatch()
 
     const logOut = () => {
+        dispatch(clearUser());
         localStorage.clear();
         navigate('/');
     }

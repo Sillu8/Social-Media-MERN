@@ -10,6 +10,7 @@ import PublicRoute from './PublicRoute'
 const UserRoutes = () => {
     const { user } = useSelector(state => state.userData);
     
+    
     return (
         <>
             <Routes>
@@ -33,11 +34,11 @@ const UserRoutes = () => {
                         <ProfilePage />
                     </PrivateRoute>
                 } />
-                <Route path={`/profile/${user?.username}/tagged`} element={
+                {/* <Route path={`/profile/${user?.username}/tagged`} element={
                     <PrivateRoute>
                         <ProfilePage />
                     </PrivateRoute>
-                } />
+                } /> */}
             </Routes>
         </>
     )

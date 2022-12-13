@@ -1,23 +1,83 @@
-import React, { Fragment, useState } from 'react'
+import React, { Fragment, useState, useRef } from 'react'
 import './ChatBody.scss';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import EmojiEmotionsSharpIcon from '@mui/icons-material/EmojiEmotionsSharp';
-import { Button, Divider, Typography } from '@mui/material'
-import { alpha, styled } from '@mui/material/styles';
-import InputBase from '@mui/material/InputBase';
+import { TextField, Typography } from '@mui/material'
 import { useEffect } from 'react';
 import toast from 'react-hot-toast';
 import { CONVERSATION, MESSAGE_API } from '../../axios';
+import SendIcon from '@mui/icons-material/Send';
 import { useSelector } from 'react-redux';
 import moment from "moment";
+import { io } from 'socket.io-client'
 
 const ChatBody = ({ state }) => {
 
     const { user } = useSelector(state => state.userData);
     const { currentChat, setCurrentChat } = state;
     const showUsers = () => { if (currentChat) setCurrentChat(null); }
+
     const [messages, setMessages] = useState();
     const [friend, setFriend] = useState()
+    const [newMessage, setNewMessage] = useState();
+    const [arrivalMsg, setArrivalMsg] = useState()
+
+    const scrollRef = useRef();
+    const socket = useRef();
+
+    useEffect(() => {
+        socket.current = io('ws://localhost:4001');
+
+        socket.current.on('getMessage', data => {
+            setArrivalMsg({
+                sender: data.senderId,
+                text: data.text,
+                createdAt: Date.now(),
+            })
+        })
+    }, [])
+
+    useEffect(() => {
+        arrivalMsg && currentChat?.members.includes(arrivalMsg.sender) &&
+            setMessages(prev => [...prev, arrivalMsg])
+    }, [arrivalMsg, currentChat]);
+
+
+    useEffect(() => {
+        socket.current.emit('addUser', user?._id);
+        socket.current.on('getUsers', users => {
+            console.log(users);
+        })
+    }, [user])
+
+
+
+    const sendMsg = async () => {
+
+        const receiverId = currentChat?.members.find(member => member !== user?._id);
+
+        socket.current.emit('sendMessage', {
+            senderId: user?._id,
+            receiverId,
+            text: newMessage,
+        });
+
+
+        try {
+            if (newMessage) {
+                const response = await MESSAGE_API.post('/', {
+                    sender: user?._id,
+                    text: newMessage,
+                    conversationId: currentChat?._id
+                });
+                setMessages([...messages, response.data.message]);
+                setNewMessage('')
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
 
     useEffect(() => {
         (async () => {
@@ -33,44 +93,9 @@ const ChatBody = ({ state }) => {
         })();
     }, [])
 
-
-
-    const BootstrapInput = styled(InputBase)(({ theme }) => ({
-        'label + &': {
-            marginTop: theme.spacing(1),
-        },
-        '& .MuiInputBase-input': {
-            borderRadius: 4,
-            position: 'relative',
-            backgroundColor: theme.palette.mode === 'light' ? '#fcfcfb' : '#2b2b2b',
-            border: '1px solid #ced4da',
-            fontSize: 16,
-            width: '230px',
-            padding: '4px 8px',
-            transition: theme.transitions.create([
-                'border-color',
-                'background-color',
-                'box-shadow',
-            ]),
-            // Use the system font instead of the default Roboto font.
-            fontFamily: [
-                '-apple-system',
-                'BlinkMacSystemFont',
-                '"Segoe UI"',
-                'Roboto',
-                '"Helvetica Neue"',
-                'Arial',
-                'sans-serif',
-                '"Apple Color Emoji"',
-                '"Segoe UI Emoji"',
-                '"Segoe UI Symbol"',
-            ].join(','),
-            '&:focus': {
-                boxShadow: `${alpha(theme.palette.primary.main, 0.25)} 0 0 0 0.2rem`,
-                borderColor: theme.palette.primary.main,
-            },
-        },
-    }));
+    useEffect(() => {
+        scrollRef.current?.scrollIntoView({ behavior: 'smooth' })
+    }, [messages])
 
 
     return (
@@ -79,18 +104,17 @@ const ChatBody = ({ state }) => {
                 <div className="logo" onClick={showUsers}> <ArrowBackIosIcon /> </div>
                 <div className="username">{friend?.name}</div>
             </div>
-            <Divider />
             <div className="chat-content">
                 {
                     messages ?
                         messages.map(message => {
                             return (
-                                <Fragment key={message?._id}>
+                                <div key={message?._id}>
                                     <div className={message?.sender === user?._id ? 'my-message' : 'message'}>
-                                        <Typography variant='body1' sx={{ padding: '0px', margin: '0px' }}>{message?.text}</Typography>
+                                        <Typography ref={scrollRef} variant='body1' sx={{ padding: '0px', margin: '0px' }}>{message?.text}</Typography>
                                         <div className={message?.sender === user?._id ? "message-timestamp-right" : "message-timestamp-left"}>{moment(message?.createdAt).fromNow()}</div>
                                     </div>
-                                </Fragment>
+                                </div>
                             )
                         })
                         :
@@ -101,11 +125,12 @@ const ChatBody = ({ state }) => {
                 <div className="emojis">
                     <EmojiEmotionsSharpIcon sx={{ cursor: 'pointer' }} />
                 </div>
+
                 <div className="input-space">
-                    <BootstrapInput variant='filled' size='small' />
+                    <TextField variant='filled' required sx={{ backgroundColor: 'white' }} multiline size='small' value={newMessage} onChange={(e) => setNewMessage(e.target.value)} />
                 </div>
                 <div className="send-btn">
-                    <Button variant='contained' sx={{ backgroundColor: 'black' }}>Send</Button>
+                    <SendIcon sx={{ cursor: 'pointer' }} onClick={sendMsg} />
                 </div>
             </div>
         </div>

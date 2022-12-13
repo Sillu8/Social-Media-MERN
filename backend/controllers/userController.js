@@ -1,7 +1,9 @@
 const asyncHandler = require('express-async-handler');
-const User = require('../model/userModel');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken')
+
+const User = require('../model/userModel');
+const Conversation = require('../model/conversationModel');
 
 
 //@desc Register new user
@@ -147,6 +149,18 @@ const followUser = asyncHandler(async (req, res) => {
             followers: activeUserId
         }
     });
+
+    const conversation = await Conversation.findOne({
+        members: { $all: [activeUserId, toBeFollowedId]}
+    });
+
+
+    if(!conversation){
+        await Conversation.create({
+            members: [activeUserId,toBeFollowedId]
+        });
+    }
+
     res.status(200).json({
         status: 'success',
         activeUser,

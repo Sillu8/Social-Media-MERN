@@ -39,7 +39,7 @@ const getMessages = asyncHandler(async (req,res) => {
 
     const messages = await Message.find({
         conversationId
-    }).sort({createdAt:'desc'}).limit(20);
+    }).limit(20);
 
     res.status(200).json({
         status: 'success',

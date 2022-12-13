@@ -12,13 +12,15 @@ function App() {
   const dispatch = useDispatch();
   const token = localStorage.getItem('token');
   const { user } = useSelector(state => state.userData);
+
+  //Dispatching for routes
   useEffect(() => {
-    if(!user){
+    if (!user) {
       dispatch(fetchUserData(token));
     }
-  // eslint-disable-next-line
+    // eslint-disable-next-line
   }, [user])
-  
+
   const { loading } = useSelector(state => state.alerts);
 
   return (
@@ -30,7 +32,7 @@ function App() {
         </div>)}
         <Routes>
           <Route path='/*' element={<UserRoutes />} />
-          <Route path='/*' element={<AdminRoutes />} />
+          <Route path='/admin/*' element={<AdminRoutes />} />
         </Routes>
       </Router>
     </>

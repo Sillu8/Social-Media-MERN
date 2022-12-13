@@ -9,7 +9,7 @@ import { useSelector } from 'react-redux';
 
 const Conversations = ({ state }) => {
 
-    const {user} = useSelector(state => state.userData);
+    const { user } = useSelector(state => state.userData);
     const [conversations, setConversations] = useState([]);
 
     useEffect(() => {
@@ -48,7 +48,7 @@ const Conversations = ({ state }) => {
                 conversations.map(chat => {
                     return (
                         <Fragment key={chat._id}>
-                            <Conversation conversation={chat} state={state}/>
+                            <Conversation conversation={chat} state={state} />
                             <Divider />
                         </Fragment>
                     )

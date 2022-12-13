@@ -24,9 +24,10 @@ const Auth = () => {
         e.preventDefault();
         if (isSignup) {
             (async () => {
-                    try {
+                try {
                     dispatch(showLoading())
                     const response = await API.post('/user/signup', formData);
+                    setFormData(initialState);
                     if (response.data.status === 'success') {
                         dispatch(hideLoading());
                         toast.success('redirecting to login page...');
@@ -46,12 +47,12 @@ const Auth = () => {
                     if (response.data.status === 'success') {
                         dispatch(hideLoading());
                         toast.success('Welcome');
-                        localStorage.setItem('token',response.data.data.token);
+                        localStorage.setItem('token', response.data.data.token);
                         navigate('/home');
                     }
                 } catch (error) {
-                   dispatch(hideLoading());
-                   toast.error(error.response.data.message);
+                    dispatch(hideLoading());
+                    toast.error(error.response.data.message);
                 }
             })();
         }
@@ -61,7 +62,16 @@ const Auth = () => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     }
 
-    const switchMode = () => setIsSignup((prevState) => !prevState)
+    const switchMode = () => {
+        handleReset();
+        setIsSignup((prevState) => !prevState)
+    }
+
+    const handleReset = () => {
+        Array.from(document.querySelectorAll('input')).forEach(input => {
+            return input.value = '';
+        });
+    }
 
     const handleShowPassword = () => setShowPassword((prevState) => !prevState);
 

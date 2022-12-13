@@ -7,7 +7,7 @@ import { CONVERSATION } from '../../../axios';
 const Conversation = ({ state, conversation }) => {
 
     const { user } = useSelector(state => state.userData);
-    const { currentChat, setCurrentChat } = state;
+    const { setCurrentChat } = state;
     const [friend, setFriend] = useState()
 
     useEffect(() => {

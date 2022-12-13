@@ -83,6 +83,21 @@ const userPosts = asyncHandler(async (req, res) => {
 })
 
 
+
+// @desc Get all saved posts of a user
+// @route GET /api/v1/post/savedPosts
+// @access  Private
+const userSavedPosts = asyncHandler(async (req, res) => {
+    const userId = req.userId;
+    const { savedPosts } = await User.findById(userId).populate('savedPosts');
+    res.status(200).json({
+        status: 'success',
+        savedPosts
+    })
+})
+
+
+
 // @desc Like a post
 // @route GET /api/v1/post/:id/like
 // @access  Private
@@ -192,5 +207,6 @@ module.exports = {
     likePost,
     savePost,
     addComment,
-    unlikePost
+    unlikePost,
+    userSavedPosts,
 }
