@@ -1,6 +1,7 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { Route, Routes } from 'react-router-dom'
+import OTP from '../../components/OTP/OTP'
 import Auth from '../Auth/Auth'
 import Home from '../Home/Home'
 import ProfilePage from '../ProfilePage/ProfilePage'
@@ -17,6 +18,11 @@ const UserRoutes = () => {
                 <Route path='/' element={
                     <PublicRoute>
                         <Auth />
+                    </PublicRoute>
+                } />
+                <Route path='/otp' element={
+                    <PublicRoute>
+                        <OTP />
                     </PublicRoute>
                 } />
                 <Route path='/home' element={

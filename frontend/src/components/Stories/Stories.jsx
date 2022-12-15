@@ -1,6 +1,5 @@
 import React from 'react';
 import './stories.scss';
-import User from '../../images/birds.jpg'
 import { useSelector } from 'react-redux';
 
 const Stories = () => {
@@ -36,7 +35,7 @@ const Stories = () => {
     <div className='stories'>
 
         <div className="story">
-            <img src={User} alt="" />
+            <img alt="" />
             <span>{user?.username}</span>
             <button>+</button>
         </div>

@@ -5,6 +5,11 @@ const jwt = require('jsonwebtoken')
 const User = require('../model/userModel');
 const Conversation = require('../model/conversationModel');
 
+const { TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_SERVICE_SID } = process.env;
+const client = require('twilio')(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, {
+    lazyLoading: true,
+})
+
 
 //@desc Register new user
 //@route POST /api/v1/user/signup
@@ -38,29 +43,81 @@ const signup = asyncHandler(async (req, res) => {
         throw new Error('An account with this username already exists!')
     }
 
-    //Hash password
-    const salt = await bcrypt.genSalt(10);
-    const hashedPwd = await bcrypt.hash(password, salt);
+    const otpResponse = await client.verify
+        .services(TWILIO_SERVICE_SID)
+        .verifications.create({
+            to: `+91${phone}`,
+            channel: 'sms',
+        });
 
-    const user = await User.create({
-        name, email, username, phone, password: hashedPwd
-    })
 
-    if (user) {
-        res.status(201).json({
-            status: 'success',
-            data: {
-                _id: user._id,
-                name: user.name,
-                email: user.email
+    res.status(200).json({
+        status: 'success',
+        message: 'An otp has been sent to your phone number!'
+    });
+})
+
+
+//@desc Register new user
+//@route POST /api/v1/user/verify
+//@access Public
+const verifyOtp = asyncHandler(async (req, res) => {
+    try {
+        const { digit1, digit2, digit3, digit4, digit5, digit6 } = req.body;
+        const otp = digit1 + digit2 + digit3 + digit4 + digit5 + digit6;
+
+        const { name, username, email, password, phone } = req.body.state;
+
+        if ((!otp)) {
+            res.status(400);
+            throw new Error('Please enter the otp!')
+        }
+
+        const verifiedRes = await client.verify
+            .services(TWILIO_SERVICE_SID)
+            .verificationChecks.create({
+                to: `+91${phone}`,
+                code: otp,
+            });
+
+        if (!verifiedRes.valid) {
+            res.status(400);
+            throw new Error('Invalid otp!')
+        }
+
+        if (verifiedRes.valid) {
+
+            //Hash password
+            const salt = await bcrypt.genSalt(10);
+            const hashedPwd = await bcrypt.hash(password, salt);
+
+            const user = await User.create({
+                name, email, username, phone, password: hashedPwd
+            })
+
+            if (user) {
+                res.status(201).json({
+                    status: 'success',
+                    data: {
+                        _id: user._id,
+                        name: user.name,
+                        email: user.email
+                    }
+                })
+            } else {
+                res.status(400);
+                throw new Error('Invalid user data!')
             }
-        })
-    } else {
-        res.status(400);
-        throw new Error('Invalid user data!')
+        }
+
+    } catch (error) {
+        console.log(error);
+        res.status(error?.status || 400)
+        throw new Error('Something unexpected occurred!');
     }
 
 })
+
 
 
 //@desc Authenticate user
@@ -151,13 +208,13 @@ const followUser = asyncHandler(async (req, res) => {
     });
 
     const conversation = await Conversation.findOne({
-        members: { $all: [activeUserId, toBeFollowedId]}
+        members: { $all: [activeUserId, toBeFollowedId] }
     });
 
 
-    if(!conversation){
+    if (!conversation) {
         await Conversation.create({
-            members: [activeUserId,toBeFollowedId]
+            members: [activeUserId, toBeFollowedId]
         });
     }
 
@@ -189,6 +246,51 @@ const unfollowUser = asyncHandler(async (req, res) => {
         status: 'success',
         activeUser,
     })
+});
+
+
+//@desc Get followers data
+//@route GET /api/v1/user/followers/:id
+//@access private
+const getFollowersData = asyncHandler(async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const { followers } = await User.findById(id, { username: 1 }).populate('followers', { username: 1 });
+
+        res.status(200).json({
+            status: 'success',
+            data: {
+                followers
+            }
+        })
+
+    } catch (error) {
+        console.log(error);
+    }
+})
+
+
+
+//@desc Get followers data
+//@route GET /api/v1/user/followings/:id
+//@access private
+const getFollowingsData = asyncHandler(async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const { following } = await User.findById(id, { username: 1 }).populate('following', { username: 1 });
+
+        res.status(200).json({
+            status: 'success',
+            data: {
+                following
+            }
+        })
+
+    } catch (error) {
+        console.log(error);
+    }
 })
 
 
@@ -203,7 +305,10 @@ module.exports = {
     getUser,
     login,
     signup,
+    verifyOtp,
     suggestions,
     followUser,
     unfollowUser,
+    getFollowersData,
+    getFollowingsData,
 }

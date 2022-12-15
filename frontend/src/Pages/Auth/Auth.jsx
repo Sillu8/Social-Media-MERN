@@ -18,7 +18,7 @@ const Auth = () => {
     const navigate = useNavigate();
     const [isSignup, setIsSignup] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
-    const [formData, setFormData] = useState(initialState)
+    const [formData, setFormData] = useState(initialState);
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -30,8 +30,8 @@ const Auth = () => {
                     setFormData(initialState);
                     if (response.data.status === 'success') {
                         dispatch(hideLoading());
-                        toast.success('redirecting to login page...');
-                        switchMode();
+                        toast.success('Please verify your phone number!');
+                        navigate('/otp',{state: formData});
                     }
                 } catch (error) {
                     dispatch(hideLoading());

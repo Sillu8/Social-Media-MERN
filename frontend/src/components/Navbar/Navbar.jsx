@@ -6,7 +6,6 @@ import Brightness7Icon from '@mui/icons-material/Brightness7';
 import { Link } from 'react-router-dom'
 import Search from '../Search/Search';
 import { Avatar } from '@mui/material';
-import User from '../../images/beach.jpg'
 import { useSelector } from 'react-redux';
 
 const Navbar = () => {
@@ -29,7 +28,7 @@ const Navbar = () => {
                     <Search />
                 </div>
                 <div className="user">
-                    <Avatar src={User} sx={{cursor:'pointer', width:'30px', height:'30px'}}/>
+                    <Avatar  sx={{cursor:'pointer', width:'30px', height:'30px'}}/>
                     <span style={{cursor:'pointer'}}>{
                         user?.name?.split(' ')[0]
                     }</span>

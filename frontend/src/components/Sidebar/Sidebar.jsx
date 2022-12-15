@@ -1,6 +1,5 @@
 import React from 'react'
 import './Sidebar.scss'
-import User from '../../images/beach.jpg'
 import { Avatar } from '@mui/material'
 import HomeIcon from '@mui/icons-material/Home';
 import ExploreIcon from '@mui/icons-material/Explore';
@@ -57,7 +56,7 @@ const Sidebar = () => {
                             to={`/profile/${user?.username}`} >
                             <div className="user">
                                 <div>
-                                    <Avatar src={User} sx={{ width: '24px', height: '24px' }} />
+                                    <Avatar sx={{ width: '24px', height: '24px' }} />
                                 </div>
                                 <span>Profile</span>
                             </div>
