@@ -1,14 +1,16 @@
 import React, { useState } from 'react'
 import { API_USER } from '../../axios'
-import './OTP.scss'
+import './ForgotPwdOtp.scss'
 import toast from 'react-hot-toast'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { hideLoading, showLoading } from '../../redux/loading/loadSlice'
 
-const OTP = () => {
+const ForgotPwdOtp = () => {
+
     const dispatch = useDispatch();
     const { state } = useLocation();
+
 
     const [digit1, setDigit1] = useState('');
     const [digit2, setDigit2] = useState('');
@@ -21,14 +23,14 @@ const OTP = () => {
 
     const submit = async () => {
         try {
-            dispatch(showLoading())
-            const res = await API_USER.post('/verify', {
-                digit1, digit2, digit3, digit4, digit5, digit6, state: state.data
+            dispatch(showLoading());
+            const res = await API_USER.patch('/forgotPassword', {
+                digit1, digit2, digit3, digit4, digit5, digit6, phone: state
             })
             dispatch(hideLoading());
             if (res.data.status === 'success') {
-                toast.success('Redirecting to login page...')
-                navigate('/')
+                toast.success('Enter your new password')
+                navigate('/newPassword', { state })
             }
         } catch (error) {
             console.log(error);
@@ -60,4 +62,4 @@ const OTP = () => {
     )
 }
 
-export default OTP
+export default ForgotPwdOtp

@@ -31,13 +31,16 @@ const Auth = () => {
                     if (response.data.status === 'success') {
                         dispatch(hideLoading());
                         toast.success('Please verify your phone number!');
-                        navigate('/otp',{state: formData});
+                        navigate('/otp', { state: {
+                            data: formData,
+                            signup: true
+                        } });
                     }
                 } catch (error) {
                     dispatch(hideLoading());
                     toast.error(error.response.data.message);
                 }
-            })()
+            })();
         } else {
 
             (async () => {
@@ -105,6 +108,14 @@ const Auth = () => {
                                     {
                                         isSignup &&
                                         <Input name='phone' label='Phone Number' handleChange={handleChange} type='text' />
+                                    }
+                                    {
+                                        !isSignup && 
+                                        <Grid container justifyContent='center' marginTop={'8px'} sx={{cursor:'pointer'}}>
+                                            <Grid item>
+                                                <Typography onClick={()=>navigate('/forgotPassword')} variant='body1' align='center' marginBottom={'10px'}>{'Forgot your password?'}</Typography>
+                                            </Grid>
+                                        </Grid>
                                     }
                                     <Button className='submit-btn' type='submit' variant='contained'>
                                         {isSignup ? 'Sign Up' : 'Login'}

@@ -1,0 +1,50 @@
+.otpPage {
+
+    height: 100vh;
+    width: 100%;
+    background-color: #0f0f1a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    color: white;
+
+    .digit-group {
+        input {
+            width: 30px;
+            height: 50px;
+            background-color: lighten(#0f0f1a, 5%);
+            border: none;
+            line-height: 50px;
+            text-align: center;
+            font-size: 24px;
+            font-family: 'Raleway', sans-serif;
+            font-weight: 200;
+            color: white;
+            margin: 0 2px;
+        }
+
+        .splitter {
+            padding: 0 5px;
+            color: white;
+            font-size: 24px;
+        }
+    }
+
+    .prompt {
+        margin-bottom: 20px;
+        font-size: 20px;
+        color: white;
+    }
+
+    .submitbtn {
+        margin-top: 10px;
+
+        button {
+            padding: 10px;
+            border-radius: 6px;
+            background-color: rgba($color: #7678cf, $alpha: 1.0);
+            color: white;
+        }
+    }
+}

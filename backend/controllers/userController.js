@@ -150,6 +150,95 @@ const login = asyncHandler(async (req, res) => {
 
 
 
+//@desc  Send an Otp
+//@route POST /api/v1/user/sendOtp
+//@access Public
+const sendOtp = asyncHandler(async (req, res) => {
+    const { phone } = req.body;
+
+    if ((!phone)) {
+        res.status(400);
+        throw new Error('Invalid Phone number!')
+    }
+
+    const user = await User.findOne({phone: phone});
+    if (!user) {
+        res.status(400);
+        throw new Error('An account with this phone number does not exist!')
+    }
+
+    const otpResponse = await client.verify
+        .services(TWILIO_SERVICE_SID)
+        .verifications.create({
+            to: `+91${phone}`,
+            channel: 'sms',
+        });
+
+
+    res.status(200).json({
+        status: 'success',
+        message: 'An otp has been sent to your phone number!'
+    });
+
+})
+
+
+//@desc  Verify Otp for forget password
+//@route POST /api/v1/user/forgotPassword
+//@access Public
+const forgotPassword = asyncHandler(async (req, res) => {
+    const { digit1, digit2, digit3, digit4, digit5, digit6, phone } = req.body;
+    const otp = digit1 + digit2 + digit3 + digit4 + digit5 + digit6;
+
+
+    const verifiedRes = await client.verify
+        .services(TWILIO_SERVICE_SID)
+        .verificationChecks.create({
+            to: `+91${phone}`,
+            code: otp,
+        });
+
+    if (!verifiedRes.valid) {
+        res.status(400);
+        throw new Error('Invalid otp!')
+    }
+
+    if (verifiedRes.valid) {
+        res.status(200).json({
+            status: 'success',
+            message: 'Enter your new password.'
+        });
+    }
+})
+
+
+
+//@desc  Change Users password
+//@route POST /api/v1/user/changePassword
+//@access Public
+const changePassword = asyncHandler(async (req, res) => {
+    const { password, phone } = req.body;
+
+    if (!password || !phone) {
+        res.status(400);
+        throw new Error('Data missing');
+    }
+
+
+    //Hash password
+    const salt = await bcrypt.genSalt(10);
+    const hashedPwd = await bcrypt.hash(password, salt);
+
+    const user = await User.findOneAndUpdate(phone, { password: hashedPwd });
+    console.log(user);
+
+    res.status(200).json({
+        status: 'success',
+        user
+    })
+})
+
+
 
 
 
@@ -311,4 +400,7 @@ module.exports = {
     unfollowUser,
     getFollowersData,
     getFollowingsData,
+    sendOtp,
+    forgotPassword,
+    changePassword,
 }
