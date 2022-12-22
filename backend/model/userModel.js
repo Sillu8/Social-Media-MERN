@@ -22,11 +22,6 @@ const userSchema = mongoose.Schema({
         required: [true, 'Please enter your password!'],
         select: false,
     },
-    requests: {
-        type: [mongoose.Schema.Types.ObjectId],
-        ref: 'User',
-        default: null
-    },
     following: {
         type: [mongoose.Schema.Types.ObjectId],
         ref: 'User',
@@ -50,9 +45,6 @@ const userSchema = mongoose.Schema({
         default: null
     },
     details: {
-        dob:{
-            type: Date,
-        },
         relation: {
             type: String,
             enum: {
@@ -71,7 +63,6 @@ const userSchema = mongoose.Schema({
         work: String,
         education: String,
         city: String,
-        hometown: String,
     },
     posts: {
         type: [mongoose.Schema.Types.ObjectId],

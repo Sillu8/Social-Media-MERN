@@ -161,7 +161,7 @@ const sendOtp = asyncHandler(async (req, res) => {
         throw new Error('Invalid Phone number!')
     }
 
-    const user = await User.findOne({phone: phone});
+    const user = await User.findOne({ phone: phone });
     if (!user) {
         res.status(400);
         throw new Error('An account with this phone number does not exist!')
@@ -254,6 +254,35 @@ const getUser = asyncHandler(async (req, res) => {
         data: {
             user
         }
+    })
+})
+
+
+//@desc Edit Profile
+//@route PUT /api/v1/user
+//@access private
+const editProfile = asyncHandler(async (req, res) => {
+    const userId = req.userId
+    const { name, bio, work, education, city, gender, relation } = req.body;
+
+    const user = await User.findByIdAndUpdate(userId, {
+        $set: {
+            name,
+            details: {
+                relation,
+                gender,
+                bio,
+                work,
+                education,
+                city
+            }
+        }
+    }, { new: true })
+    res.status(200).json({
+        status: 'success',
+        data: {
+            user
+        },
     })
 })
 
@@ -403,4 +432,5 @@ module.exports = {
     sendOtp,
     forgotPassword,
     changePassword,
+    editProfile,
 }

@@ -7,9 +7,11 @@ import { Avatar } from '@mui/material'
 import { useDispatch, useSelector } from "react-redux";
 import { setUser } from '../../redux/auth/userSlice'
 import toast from 'react-hot-toast'
+import { useNavigate } from 'react-router-dom'
 
 const Suggestions = () => {
 
+    const navigate = useNavigate()
     const [suggestions, setSuggestions] = useState([]);
     const { user } = useSelector(state => state.userData);
     const dispatch = useDispatch()
@@ -65,7 +67,7 @@ const Suggestions = () => {
                             <div className="follower" key={suggestion?._id}>
                                 <div className="">
                                     <Avatar src={suggestion?.profilePic} />
-                                    <div className="name">
+                                    <div className="name" onClick={()=>navigate(`/${suggestion?.username}`)}>
                                         <span>{suggestion?.name}</span>
                                         <span>{suggestion?.username}</span>
                                     </div>

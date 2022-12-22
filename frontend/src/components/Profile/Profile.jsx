@@ -3,7 +3,6 @@ import UserInfo from '../UserInfo/UserInfo'
 import './profile.scss'
 import GridOnIcon from '@mui/icons-material/GridOn';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
-// import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import UserPosts from '../UserPosts/UserPosts';
 import { NavLink, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
@@ -18,6 +17,8 @@ const Profile = () => {
 
     const [posts, setPosts] = useState([]);
     const [savedPosts, setSavedPosts] = useState([]);
+
+    
 
     useEffect(() => {
         if (isProfile) {
@@ -40,7 +41,7 @@ const Profile = () => {
             })();
         }
         //eslint-disable-next-line
-    }, [location.pathname])
+    }, [isProfile])
 
 
     return (
@@ -68,16 +69,6 @@ const Profile = () => {
                             <BookmarkIcon /><span>Saved</span>
                         </div>
                     </NavLink>
-                    {/* <NavLink
-                        to={`/profile/${user?.username}/tagged`}
-                        className={({ isActive }) =>
-                            isActive ? 'active-link' : 'non-active-link'
-                        }
-                    >
-                        <div className="option">
-                            <AccountBoxIcon /><span>Tagged</span>
-                        </div>
-                    </NavLink> */}
                 </div>
                 {
                     isProfile ?

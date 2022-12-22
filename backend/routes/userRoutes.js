@@ -1,11 +1,11 @@
 const express = require('express');
 const router = express.Router();
 
-const { getUser, login, signup, suggestions, followUser, unfollowUser, getFollowersData, getFollowingsData, verifyOtp, sendOtp, forgotPassword, changePassword } = require('../controllers/userController');
+const { getUser, login, signup, suggestions, followUser, unfollowUser, getFollowersData, getFollowingsData, verifyOtp, sendOtp, forgotPassword, changePassword, editProfile } = require('../controllers/userController');
 const protect = require('../middleware/authMiddleware');
 
 
-router.route('/').get(protect, getUser);
+router.route('/').get(protect, getUser).put(protect, editProfile);
 router.post('/signup', signup);
 router.post('/verify', verifyOtp);
 router.post('/login', login);

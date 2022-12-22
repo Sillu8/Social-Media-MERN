@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Avatar, Button, List, ListItem } from '@mui/material'
+import { Avatar, Button,FormLabel, List, ListItem,TextField } from '@mui/material'
 import SettingsIcon from '@mui/icons-material/Settings';
 import './UserInfo.scss'
 import { useDispatch, useSelector } from 'react-redux';
@@ -8,6 +8,9 @@ import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import { API_USER } from '../../axios';
 import toast from 'react-hot-toast'
+import { hideLoading, showLoading } from '../../redux/loading/loadSlice';
+import { useForm } from 'react-hook-form';
+import { setUser } from '../../redux/auth/userSlice';
 
 const UserInfo = () => {
     const style = {
@@ -22,28 +25,51 @@ const UserInfo = () => {
         p: 4,
     };
 
+    const button = {
+
+        display: 'inline-block',
+        outline: 'none',
+        cursor: 'pointer',
+        fontSize: '16px',
+        lineHeight: '20px',
+        fontWeight: '600',
+        borderRadius: '8px',
+        padding: '10px 22px',
+        border: 'none',
+        transition: 'box-shadow 0.2s ease 0s, -ms-transform 0.1s ease 0s, -webkit-transform 0.1s ease 0s, transform 0.1s ease 0s',
+        background: 'linear-gradient(to right, rgb(230, 30, 77) 0%, rgb(227, 28, 95) 50%, rgb(215, 4, 102) 100%)',
+        color: '#fff',
+
+    }
+
     const dispatch = useDispatch();
+    const user = useSelector(state => state.userData.user);
     const [followersData, setFollowersData] = useState([]);
     const [followingsData, setFollowingsData] = useState([]);
 
     const getFollowersData = async () => {
         try {
-            const res = await API_USER.get(`/followers/${user?._id}`)
+            dispatch(showLoading())
+            const res = await API_USER.get(`/followers/${user?._id}`);
+            dispatch(hideLoading());
             setFollowersData(res.data.data.followers);
         } catch (error) {
+            dispatch(hideLoading());
             toast.error(error.response.data.message);
         }
     }
 
     const getFollowingsData = async () => {
         try {
+            dispatch(showLoading())
             const res = await API_USER.get(`/followings/${user?._id}`)
+            dispatch(hideLoading());
             setFollowingsData(res.data.data.following);
         } catch (error) {
+            dispatch(hideLoading());
             toast.error(error.response.data.message);
         }
     }
-
 
     const handleOpen = () => {
         getFollowersData();
@@ -61,7 +87,27 @@ const UserInfo = () => {
     const handleFollowingClose = () => setFollowingsOpen(false);
 
 
-    const user = useSelector(state => state.userData.user);
+    //Modal for edit profile
+    const handleProfileModalOpen = () => {
+        setProfileModal(true)
+    };
+    const [profileModal, setProfileModal] = useState(false);
+    const handleProfileModalClose = () => setProfileModal(false);
+
+
+    const { register, handleSubmit, formState: { errors }, setValue } = useForm();
+    const onSubmit = async (data) => {
+        try {
+            console.log(register);
+            dispatch(showLoading());
+            const res = await API_USER.put('/', data);
+            dispatch(hideLoading());
+            dispatch(setUser(res.data.user))
+        } catch (error) {
+            dispatch(hideLoading());
+            console.log(error);
+        }
+    }
 
 
     return (
@@ -72,9 +118,54 @@ const UserInfo = () => {
             <div className="userInfo">
                 <div className="top">
                     <span>{user?.username}</span>
-                    <Button variant='outlined'>Edit Profile</Button>
+                    <Button variant='outlined' onClick={handleProfileModalOpen}>Edit Profile</Button>
                     <SettingsIcon sx={{ cursor: 'pointer' }} />
+
+                    {/* Profile Modal */}
+                    <Modal
+                        open={profileModal}
+                        onClose={handleProfileModalClose}
+                        aria-labelledby="profileModal"
+                        aria-describedby="modal-modal-description"
+                    >
+                        <Box sx={style}>
+                            <Typography id="profileModal" variant="h6" component="h2" align='center' sx={{ marginBottom: '8px' }}>
+                                Edit Profile
+                            </Typography>
+                            <div className="profile-form">
+                                <form onSubmit={handleSubmit(onSubmit)}>
+
+                                    <TextField label='Name' defaultValue={user?.name} {...register("name", { required: true, maxLength: 30 })} size='small' sx={{ marginTop: '5px', marginBottom: '5px' }} />
+                                    <TextField defaultValue={user?.details?.bio} label='Bio' {...register("bio")} size='small' sx={{ marginTop: '5px', marginBottom: '5px' }} />
+                                    <TextField defaultValue={user?.details?.work} label='Work' {...register("work")} size='small' sx={{ marginTop: '5px', marginBottom: '5px' }} />
+                                    <TextField defaultValue={user?.details?.education} label='Education' {...register("education")} size='small' sx={{ marginTop: '5px', marginBottom: '5px' }} />
+                                    <TextField defaultValue={user?.details?.city} label='City' {...register("city")} size='small' sx={{ marginTop: '5px', marginBottom: '5px' }} />
+
+                                    <div style={{ padding: '10px 0px' }}>
+                                        <FormLabel htmlFor="gender">Gender</FormLabel><br />
+                                        <select {...register("gender", { required: true })} defaultValue={user?.details?.gender}>
+                                            <option value="male">Male</option>
+                                            <option value="female">Female</option>
+                                            <option value="genderqueer">Genderqueer</option>
+                                        </select>
+                                    </div>
+
+                                    <div style={{ marginBottom: '10px' }}>
+                                        <label htmlFor="relation">Relation</label><br />
+                                        <label htmlFor="" style={{ marginRight: '5px' }}>Single</label>
+                                        <input {...register("relation", { required: true })} type="radio" value="single" style={{ marginRight: '5px' }} />
+                                        <label htmlFor="" style={{ marginRight: '5px' }}>Married</label>
+                                        <input {...register("relation", { required: true })} type="radio" value="married" style={{ marginRight: '5px' }} />
+                                    </div>
+
+                                    <input type="submit" value={'UPDATE'} style={button} />
+                                </form>
+                            </div>
+                        </Box>
+                    </Modal>
                 </div>
+
+
                 <div className="connection">
                     <span className='posts'>{`${user?.posts?.length} post${user?.posts?.length <= 1 ? '' : 's'}`}</span>
                     <span className='followers' onClick={handleOpen}>{`${user?.followers?.length} followers`}</span>
@@ -90,21 +181,14 @@ const UserInfo = () => {
                             </Typography>
                             <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
                                 {followersData.map((follower) => (
-                                    // <ListItem
-                                    //     key={follower._id}
-                                    //     disableGutters
-                                    //     secondaryAction={
-                                    //         <Button variant='contained' onClick={()=>unfollowUser(follower?._id)}>following</Button>
-                                    //     }
-                                    // >
                                     <Typography sx={{ fontWeight: 'bold', fontSize: '20px', marginTop: '3px' }}>{follower.username}</Typography>
-                                    // </ListItem>
                                 ))}
                             </List>
                         </Box>
                     </Modal>
-                    <span className='following' onClick={handleFollowingOpen}>{`${user?.following?.length} following`}</span>
 
+
+                    <span className='following' onClick={handleFollowingOpen}>{`${user?.following?.length} following`}</span>
                     <Modal
                         open={followingsOpen}
                         onClose={handleFollowingClose}
@@ -131,6 +215,8 @@ const UserInfo = () => {
                         </Box>
                     </Modal>
                 </div>
+
+
                 <div className="userDescription">
                     <span>{user?.name}</span>
                     <span>{user?.details?.bio}</span>

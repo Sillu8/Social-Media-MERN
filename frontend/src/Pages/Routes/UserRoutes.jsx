@@ -5,6 +5,8 @@ import ForgotPassword from '../../components/ForgotPassword/ForgotPassword'
 import ForgotPwdOtp from '../../components/ForgotPwdOtp/ForgotPwdOtp'
 import NewPassword from '../../components/NewPwd/NewPassword'
 import OTP from '../../components/OTP/OTP'
+import UserProfile from '../../components/UserProfile/UserProfile'
+import UserProfilePage from '../../components/UserProfilePage/UserProfilePage'
 import Auth from '../Auth/Auth'
 import Home from '../Home/Home'
 import ProfilePage from '../ProfilePage/ProfilePage'
@@ -60,11 +62,12 @@ const UserRoutes = () => {
                         <ProfilePage />
                     </PrivateRoute>
                 } />
-                {/* <Route path={`/profile/${user?.username}/tagged`} element={
+                <Route path={`/:userName`} element={
                     <PrivateRoute>
-                        <ProfilePage />
+                        <UserProfilePage />
                     </PrivateRoute>
-                } /> */}
+                } />
+                
             </Routes>
         </>
     )

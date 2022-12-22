@@ -36,12 +36,12 @@ const Sidebar = () => {
                             <HomeIcon /> <span>Home</span>
                         </NavLink>
                     </div>
-                    <div className="item">
+                    {/* <div className="item">
                         <ExploreIcon /> <span>Explore</span>
-                    </div>
-                    <div className="item">
+                    </div> */}
+                    {/* <div className="item">
                         <MessageRoundedIcon /> <span>Messages</span>
-                    </div>
+                    </div> */}
                     <div className="item">
                         <NotificationsIcon /> <span>Notifications</span>
                     </div>

@@ -79,6 +79,12 @@ const Post = ({ data, id }) => {
                             <span className='date'>{moment(post?.createdAt).fromNow()}</span>
                         </div>
                     </div>
+                    {/* Icon for buttons */}
+                    <select name="option" id="" className='post-options'>
+                        <option value="">Report</option>
+                        <option value="">Edit</option>
+                        <option value="">Delete</option>
+                    </select>
                     <MoreVertIcon sx={{ cursor: 'pointer' }} />
                 </div>
 
