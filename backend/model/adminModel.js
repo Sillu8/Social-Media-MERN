@@ -9,29 +9,22 @@ const adminSchema = mongoose.Schema({
         type: String,
         required: [true, 'Please enter your email!'],
     },
-    username: {
-        type: String,
-        required: [true, 'Please enter a username!'],
-    },
     phone: {
         type: String,
         required: [true, 'Please enter your phone number!']
     },
     password: {
         type: String,
-        required: [true, 'Please enter your password!']
+        required: [true, 'Please enter your password!'],
+        select: false
     },
     profilePic: {
         type: String,
         default: null,
     },
-    coverPic: {
-        type: String,
-        default: null,
-    },
     isAdmin: {
         type: Boolean,
-        default: false,
+        default: true,
     },
     unseenNotifications: {
         type: [String],

@@ -43,8 +43,9 @@ export const userSlice = createSlice({
             state.user = null;
             state.message = action.payload;
             localStorage.removeItem('token');
-        })
-    }
+        });
+    },
+
 })
 
 

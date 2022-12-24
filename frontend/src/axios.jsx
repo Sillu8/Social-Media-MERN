@@ -61,3 +61,16 @@ MESSAGE_API.interceptors.request.use(
         return config;
     }
 )
+
+
+export const API_ADMIN = axios.create({
+    baseURL: 'http://localhost:4000/api/v1/admin'
+});
+
+
+API_ADMIN.interceptors.request.use(
+    config => {
+        config.headers['Authorization'] = `Bearer ${localStorage.getItem('adminToken')}`;
+        return config;
+    }
+)

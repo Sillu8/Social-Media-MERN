@@ -1,7 +1,9 @@
 import React from 'react'
 import { Route, Routes } from 'react-router-dom'
+import AdminHome from '../AdminHome/AdminHome'
 import AdminLogin from '../AdminLogin/AdminLogin'
-import PublicRoute from './PublicRoute'
+import AdminPrivateRoute from './AdminPrivateRoute'
+import AdminPublicRoute from './AdminPublicRoute'
 
 const AdminRoutes = () => {
   return (
@@ -9,12 +11,18 @@ const AdminRoutes = () => {
       <Routes>
 
         <Route path='/login' element={
-          <PublicRoute>
+          <AdminPublicRoute>
             <AdminLogin />
-          </PublicRoute>
+          </AdminPublicRoute>
         } />
 
-        
+        <Route path='/home' element={
+          <AdminPrivateRoute>
+            <AdminHome />
+          </AdminPrivateRoute>
+        } />
+
+
       </Routes>
     </div>
   )
