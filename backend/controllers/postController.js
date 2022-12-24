@@ -167,6 +167,58 @@ const savePost = asyncHandler(async (req, res) => {
 
 
 
+// @desc Report Post
+// @route PATCH /api/v1/post/:postId/report
+// @access  Private
+const reportPost = asyncHandler(async (req, res) => {
+    const { postId } = req.params;
+    const { reportedUserId, reason } = req.body;
+    const date = new Date()
+
+    const post = await Post.findByIdAndUpdate(postId, {
+        $set: {
+            report: {
+                reportedUserId,
+                reason,
+                time: date.toISOString()
+            }
+        }
+    });
+
+    res.status(200).json({
+        status: 'success',
+        message: 'Successfully reported! Please wait while we check the post.'
+    })
+})
+
+
+
+
+// @desc Delete Post
+// @route DELETE /api/v1/post
+// @access  Private
+const deletePost = asyncHandler(async (req, res) => {
+    try {
+
+        const { postId } = req.body;
+
+        const post = await Post.findOne({ _id: postId });
+
+        const result = await cloudinary.uploader.destroy(post.cloudinary_id);
+
+        await Post.findByIdAndDelete(postId);
+
+        res.status(200).json({
+            status: 'success',
+            message: 'Your post has been successfully removed.'
+        })
+
+    } catch (error) {
+        console.log(error);
+    }
+})
+
+
 
 // @desc Add a new comment
 // @route GET /api/v1/post/:id/comment
@@ -209,4 +261,6 @@ module.exports = {
     addComment,
     unlikePost,
     userSavedPosts,
+    reportPost,
+    deletePost,
 }

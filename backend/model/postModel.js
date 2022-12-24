@@ -60,7 +60,22 @@ const postSchema = mongoose.Schema({
     saves: {
         type: Object,
         default: [],
-    }
+    },
+    report: [
+        {
+            reportedUserId: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'User',
+            },
+            reason: {
+                type: String,
+                required: true,
+            },
+            time:{
+                type: Date,
+            }
+        }
+    ]
 }, { timestamps: true });
 
 module.exports = mongoose.model('Post', postSchema);
