@@ -72,6 +72,10 @@ const userSchema = mongoose.Schema({
         type: [mongoose.Schema.Types.ObjectId],
         ref: 'Post',
         default: [],
+    },
+    isBlocked: {
+        type: Boolean,
+        default: false,
     }
 },{timestamps: true})
 

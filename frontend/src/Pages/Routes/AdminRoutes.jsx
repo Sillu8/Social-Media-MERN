@@ -2,6 +2,7 @@ import React from 'react'
 import { Route, Routes } from 'react-router-dom'
 import AdminHome from '../AdminHome/AdminHome'
 import AdminLogin from '../AdminLogin/AdminLogin'
+import UserManagementPage from '../UserManagementPage'
 import AdminPrivateRoute from './AdminPrivateRoute'
 import AdminPublicRoute from './AdminPublicRoute'
 
@@ -19,6 +20,12 @@ const AdminRoutes = () => {
         <Route path='/home' element={
           <AdminPrivateRoute>
             <AdminHome />
+          </AdminPrivateRoute>
+        } />
+
+        <Route path='/users' element={
+          <AdminPrivateRoute>
+            <UserManagementPage />
           </AdminPrivateRoute>
         } />
 

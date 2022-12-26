@@ -1,8 +1,11 @@
 import React from 'react'
+import AdminLayout from '../AdminLayout'
 
 const AdminHome = () => {
   return (
-    <div>AdminHome</div>
+    <AdminLayout>
+        Home
+    </AdminLayout>
   )
 }
 

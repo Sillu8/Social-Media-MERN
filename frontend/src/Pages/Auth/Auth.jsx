@@ -49,7 +49,6 @@ const Auth = () => {
                     const response = await API.post('/user/login', formData);
                     if (response.data.status === 'success') {
                         dispatch(hideLoading());
-                        toast.success('Welcome');
                         localStorage.setItem('token', response.data.data.token);
                         navigate('/home');
                     }

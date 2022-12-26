@@ -24,11 +24,11 @@ const Posts = () => {
         }
       } catch (error) {
         dispatch(hideLoading());
-        toast.error('Please login again!')
+        toast.error(error.response.data.message)
       }
     })();
 
-    //eslint-disable-next-line
+    
   }, [])
 
 

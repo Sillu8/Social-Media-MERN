@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const { newAdmin, adminLogin, adminData, } = require('../controllers/adminController');
+const { newAdmin, adminLogin, adminData, getUsersData, changeUserStatus, } = require('../controllers/adminController');
 const protect = require('../middleware/authMiddleware');
 
 router.route('/')
@@ -9,6 +9,8 @@ router.route('/')
     .post(newAdmin);
 
 router.post('/login', adminLogin);
+router.get('/users', protect, getUsersData);
+router.patch('/:userId/block', protect, changeUserStatus)
 
 
 

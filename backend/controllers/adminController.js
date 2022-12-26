@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken')
 
 const Admin = require('../model/adminModel');
+const User = require('../model/userModel');
 
 
 //@desc Create new Admin
@@ -93,6 +94,58 @@ const adminLogin = asyncHandler(async (req, res) => {
 
 
 
+//@desc Get users data
+//@route GET /api/v1/admin/users
+//@access Private
+const getUsersData = asyncHandler(async (req, res) => {
+
+    const users = await User.aggregate([
+        {
+            $project: {
+                id: "$_id",
+                name: 1,
+                email: 1,
+                isBlocked: 1,
+                phone: 1,
+                _id: 0
+            }
+        }
+    ])
+
+    res.status(200).json({
+        status: 'success',
+        data: {
+            users
+        }
+    })
+})
+
+
+
+
+//@desc Block or unblock user
+//@route GET /api/v1/admin/:userId/block
+//@access Private
+const changeUserStatus = asyncHandler(async (req, res) => {
+    const { userId } = req.params;
+    const { isBlocked } = req.body;
+    
+    const newStatus = isBlocked ? false : true
+
+
+    const user = await User.findByIdAndUpdate(userId, {
+        isBlocked: newStatus
+    }, {new: true});
+
+    res.status(200).json({
+        status: 'success',
+        message: 'Successfully changed status.',
+        user
+    })
+
+
+})
+
 
 
 
@@ -106,4 +159,6 @@ module.exports = {
     newAdmin,
     adminData,
     adminLogin,
+    getUsersData,
+    changeUserStatus,
 }

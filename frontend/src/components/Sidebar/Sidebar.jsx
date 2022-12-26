@@ -3,14 +3,15 @@ import './Sidebar.scss'
 import { Avatar } from '@mui/material'
 import HomeIcon from '@mui/icons-material/Home';
 import ExploreIcon from '@mui/icons-material/Explore';
-import MessageRoundedIcon from '@mui/icons-material/MessageRounded';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import SettingsIcon from '@mui/icons-material/Settings';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from "react-redux";
 import { clearUser } from '../../redux/auth/userSlice';
-
+import { clearAdmin } from '../../redux/auth/adminSlice';
+import GroupIcon from '@mui/icons-material/Group';
+import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
 
 const Sidebar = () => {
     const navigate = useNavigate();
@@ -19,52 +20,105 @@ const Sidebar = () => {
 
     const logOut = () => {
         dispatch(clearUser());
-        localStorage.clear();
+        localStorage.removeItem('token');
         navigate('/');
+    }
+
+    const adminLogOut = () => {
+        dispatch(clearAdmin());
+        localStorage.removeItem('adminToken');
+        navigate('/admin/login');
     }
 
     return (
         <div className='sidebar'>
             <div className="container">
                 <div className="menu">
-                    <div className="item">
-                        <NavLink
-                            className = {({ isActive }) =>
-                                isActive ? 'active-style' : 'inactive-style'
-                            }
-                            to={'/home'} >
-                            <HomeIcon /> <span>Home</span>
-                        </NavLink>
-                    </div>
-                    {/* <div className="item">
-                        <ExploreIcon /> <span>Explore</span>
-                    </div> */}
-                    {/* <div className="item">
-                        <MessageRoundedIcon /> <span>Messages</span>
-                    </div> */}
-                    <div className="item">
-                        <NotificationsIcon /> <span>Notifications</span>
-                    </div>
-                    <div className="item">
-                        <SettingsIcon /> <span>Settings</span>
-                    </div>
-                    <div className="item">
-                        <NavLink
-                            className = {({ isActive }) =>
-                                isActive ? 'active-style' : 'inactive-style'
-                            }
-                            to={`/profile/${user?.username}`} >
-                            <div className="user">
-                                <div>
-                                    <Avatar sx={{ width: '24px', height: '24px' }} />
+                    {
+                        user ?
+                        // User menu buttons
+                            <>
+                                <div className="item">
+                                    <NavLink
+                                        className={({ isActive }) =>
+                                            isActive ? 'active-style' : 'inactive-style'
+                                        }
+                                        to={'/home'} >
+                                        <HomeIcon /> <span>Home</span>
+                                    </NavLink>
                                 </div>
-                                <span>Profile</span>
-                            </div>
-                        </NavLink>
-                    </div>
-                    <div className="item" onClick={logOut}>
-                        <LogoutIcon /> <span>Logout</span>
-                    </div>
+                                <div className="item">
+                                    <NotificationsIcon /> <span>Notifications</span>
+                                </div>
+                                <div className="item">
+                                    <SettingsIcon /> <span>Settings</span>
+                                </div>
+                                <div className="item">
+                                    <NavLink
+                                        className={({ isActive }) =>
+                                            isActive ? 'active-style' : 'inactive-style'
+                                        }
+                                        to={`/profile/${user?.username}`} >
+                                        <div className="user">
+                                            <div>
+                                                <Avatar sx={{ width: '24px', height: '24px' }} />
+                                            </div>
+                                            <span>Profile</span>
+                                        </div>
+                                    </NavLink>
+                                </div>
+                                <div className="item" onClick={logOut}>
+                                    <LogoutIcon /> <span>Logout</span>
+                                </div>
+                            </>
+                            :
+                            // Admin Menu Buttons
+                            <>
+                                <div className="item">
+                                    <NavLink
+                                        className={({ isActive }) =>
+                                            isActive ? 'active-style' : 'inactive-style'
+                                        }
+                                        to={'/admin/home'} >
+                                        <HomeIcon /> <span>Home</span>
+                                    </NavLink>
+                                </div>
+                                <div className="item">
+                                    <NavLink
+                                        className={({ isActive }) =>
+                                            isActive ? 'active-style' : 'inactive-style'
+                                        }
+                                        to={'/admin/users'} >
+                                        <div className="user">
+                                            <div>
+                                                <GroupIcon sx={{ width: '24px', height: '24px' }} />
+                                            </div>
+                                            <span>Users</span>
+                                        </div>
+                                    </NavLink>
+                                </div>
+                                <div className="item">
+                                    <NavLink
+                                        className={({ isActive }) =>
+                                            isActive ? 'active-style' : 'inactive-style'
+                                        }
+                                        to={'/admin/posts'} >
+                                        <div className="user">
+                                            <div>
+                                                <LibraryBooksIcon sx={{ width: '24px', height: '24px' }} />
+                                            </div>
+                                            <span>Posts</span>
+                                        </div>
+                                    </NavLink>
+                                </div>
+                                <div className="item">
+                                    <NotificationsIcon /> <span>Notifications</span>
+                                </div>
+                                <div className="item" onClick={adminLogOut}>
+                                    <LogoutIcon /> <span>Logout</span>
+                                </div>
+                            </>
+                    }
                 </div>
             </div>
         </div>
@@ -72,3 +126,12 @@ const Sidebar = () => {
 }
 
 export default Sidebar
+
+
+
+// {/* <div className="item">
+//     <ExploreIcon /> <span>Explore</span>
+// </div> */}
+// {/* <div className="item">
+//     <MessageRoundedIcon /> <span>Messages</span>
+// </div> */}

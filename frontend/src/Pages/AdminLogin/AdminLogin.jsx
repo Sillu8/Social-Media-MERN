@@ -27,26 +27,21 @@ const AdminLogin = () => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     }
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-
-
-        (async () => {
-            try {
-                dispatch(showLoading())
-                const response = await API.post('/admin/login', formData);
-                if (response.data.status === 'success') {
-                    dispatch(hideLoading());
-                    toast.success('Welcome');
-                    localStorage.setItem('adminToken', response.data.data.adminToken);
-                    navigate('/admin/home');
-                }
-            } catch (error) {
-                dispatch(hideLoading());
-                toast.error(error.response.data.message);
+        try {
+            dispatch(showLoading());
+            const response = await API.post('/admin/login', formData);
+            dispatch(hideLoading());
+            if (response.data.status === 'success') {
+                toast.success('Welcome');
+                localStorage.setItem('adminToken', response.data.data.adminToken);
+                navigate('/admin/home');
             }
-        })();
-
+        } catch (error) {
+            dispatch(hideLoading());
+            toast.error(error.response.data.message);
+        }
     };
 
     return (
