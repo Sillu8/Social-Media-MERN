@@ -176,7 +176,7 @@ const reportPost = asyncHandler(async (req, res) => {
     const date = new Date()
 
     const post = await Post.findByIdAndUpdate(postId, {
-        $set: {
+        $push: {
             report: {
                 reportedUserId,
                 reason,
@@ -215,6 +215,7 @@ const deletePost = asyncHandler(async (req, res) => {
 
     } catch (error) {
         console.log(error);
+        throw new Error('Unknown error')
     }
 })
 
@@ -252,6 +253,31 @@ const addComment = asyncHandler(async (req, res) => {
 });
 
 
+
+
+
+// @desc Delete Post
+// @route DELETE /api/v1/post/:postId/1
+// @access  Private
+const getSinglePost = asyncHandler(async (req, res) => {
+    try {
+
+        const { postId } = req.params;
+
+        const post = await Post.findOne({ _id: postId });
+
+        res.status(200).json({
+            status: 'success',
+            post
+        })
+
+    } catch (error) {
+        console.log(error);
+        throw new Error('Unknown error!')
+    }
+})
+
+
 module.exports = {
     allPosts,
     newPost,
@@ -263,4 +289,5 @@ module.exports = {
     userSavedPosts,
     reportPost,
     deletePost,
+    getSinglePost,
 }

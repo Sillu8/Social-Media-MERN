@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken')
 
 const Admin = require('../model/adminModel');
 const User = require('../model/userModel');
+const Post = require('../model/postModel');
 
 
 //@desc Create new Admin
@@ -121,6 +122,38 @@ const getUsersData = asyncHandler(async (req, res) => {
 })
 
 
+//@desc Get reported posts
+//@route GET /api/v1/admin/posts/reported
+//@access Private
+const getReportedPosts = asyncHandler(async (req, res) => {
+
+    const posts = await Post.aggregate([
+        {
+            $match: {
+                report: {
+                    $exists: true,
+                },
+            }
+        },
+        { $unwind: "$report" },
+        {
+            $project: {
+                id: "$_id",
+                _id: 0,
+                report: 1,
+            }
+        }
+
+    ])
+
+    res.status(200).json({
+        status: 'success',
+        result: posts.length,
+        posts
+    })
+})
+
+
 
 
 //@desc Block or unblock user
@@ -129,22 +162,46 @@ const getUsersData = asyncHandler(async (req, res) => {
 const changeUserStatus = asyncHandler(async (req, res) => {
     const { userId } = req.params;
     const { isBlocked } = req.body;
-    
+
     const newStatus = isBlocked ? false : true
 
 
     const user = await User.findByIdAndUpdate(userId, {
         isBlocked: newStatus
-    }, {new: true});
+    }, { new: true });
 
     res.status(200).json({
         status: 'success',
         message: 'Successfully changed status.',
         user
     })
-
-
 })
+
+
+
+
+//@desc Remove report from post
+//@route GET /api/v1/admin/:postId/report
+//@access Private
+const removeReport = asyncHandler(async (req, res) => {
+
+    const { postId } = req.params;
+    const { reportId } = req.body;
+
+    const post = await Post.findByIdAndUpdate(postId, {
+        $pull: {
+            report: {
+                _id: reportId
+            }
+        }
+    }, { new: true });
+
+    res.status(200).json({
+        status: 'success',
+        post,
+    })
+})
+
 
 
 
@@ -161,4 +218,6 @@ module.exports = {
     adminLogin,
     getUsersData,
     changeUserStatus,
+    getReportedPosts,
+    removeReport,
 }

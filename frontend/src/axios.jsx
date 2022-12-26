@@ -4,13 +4,17 @@ export const API = axios.create({
     baseURL: 'http://localhost:4000/api/v1'
 });
 
+const token = `Bearer ${localStorage.getItem('token')}`;
+const adminToken = `Bearer ${localStorage.getItem('adminToken')}`;
+
+
 export const API_USER = axios.create({
     baseURL: 'http://localhost:4000/api/v1/user'
 })
 
 API_USER.interceptors.request.use(
     config => {
-        config.headers['Authorization'] = `Bearer ${localStorage.getItem('token')}`;
+        config.headers['Authorization'] = token;
         return config;
     }
 )
@@ -21,7 +25,7 @@ export const API_POST = axios.create({
 
 API_POST.interceptors.request.use(
     config => {
-        config.headers['Authorization'] = `Bearer ${localStorage.getItem('token')}`;
+        config.headers['Authorization'] = token;
         config.headers['Content-Type'] = 'multipart/form-data';
         return config;
     }
@@ -33,7 +37,7 @@ export const POSTS = axios.create({
 
 POSTS.interceptors.request.use(
     config => {
-        config.headers['Authorization'] = `Bearer ${localStorage.getItem('token')}`;
+        config.headers['Authorization'] = token
         return config;
     }
 )
@@ -45,7 +49,7 @@ export const CONVERSATION = axios.create({
 
 CONVERSATION.interceptors.request.use(
     config => {
-        config.headers['Authorization'] = `Bearer ${localStorage.getItem('token')}`;
+        config.headers['Authorization'] = token;
         return config;
     }
 )
@@ -57,7 +61,7 @@ export const MESSAGE_API = axios.create({
 
 MESSAGE_API.interceptors.request.use(
     config => {
-        config.headers['Authorization'] = `Bearer ${localStorage.getItem('token')}`;
+        config.headers['Authorization'] = token;
         return config;
     }
 )
@@ -71,6 +75,19 @@ export const API_ADMIN = axios.create({
 API_ADMIN.interceptors.request.use(
     config => {
         config.headers['Authorization'] = `Bearer ${localStorage.getItem('adminToken')}`;
+        return config;
+    }
+)
+
+
+export const API_ADMIN_POST = axios.create({
+    baseURL: 'http://localhost:4000/api/v1/post'
+});
+
+
+API_ADMIN_POST.interceptors.request.use(
+    config => {
+        config.headers['Authorization'] = adminToken;
         return config;
     }
 )

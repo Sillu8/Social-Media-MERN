@@ -15,8 +15,8 @@ import PublicRoute from './PublicRoute'
 
 const UserRoutes = () => {
     const { user } = useSelector(state => state.userData);
-    
-    
+
+
     return (
         <>
             <Routes>
@@ -30,7 +30,7 @@ const UserRoutes = () => {
                         <OTP />
                     </PublicRoute>
                 } />
-                {/*For entering the otp for resetting pwd*/ }
+                {/*For entering the otp for resetting pwd*/}
                 <Route path='/verifyOtp' element={
                     <PublicRoute>
                         <ForgotPwdOtp />
@@ -46,7 +46,7 @@ const UserRoutes = () => {
                         <ForgotPassword />
                     </PublicRoute>
                 } />
-                
+
                 <Route path='/home' element={
                     <PrivateRoute>
                         <Home />
@@ -67,7 +67,8 @@ const UserRoutes = () => {
                         <UserProfilePage />
                     </PrivateRoute>
                 } />
-                
+
+
             </Routes>
         </>
     )

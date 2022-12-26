@@ -22,6 +22,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import { useEffect } from 'react';
 
 const style = {
     position: 'absolute',
@@ -38,14 +39,19 @@ const style = {
 
 const Post = ({ data, id }) => {
 
+    
+    
     const dispatch = useDispatch();
     const { user } = useSelector(state => state.userData);
-
-
+    
+    
     const [post, setPost] = useState(data);
     const [removePost, setRemovePost] = useState(false)
-
-
+    
+    
+    useEffect(()=>{
+        setPost(data);
+    },[data])
     //Delete dialog states
     const [dialogOpen, setDialogOpen] = useState(false);
     const handleDialogOpen = () => setDialogOpen(true)
