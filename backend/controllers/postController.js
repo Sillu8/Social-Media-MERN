@@ -102,20 +102,42 @@ const userSavedPosts = asyncHandler(async (req, res) => {
 // @route GET /api/v1/post/:id/like
 // @access  Private
 const likePost = asyncHandler(async (req, res) => {
+    try {
 
-    const userID = req.userId;
-    const postId = req.params.id;
-    if (!mongoose.Types.ObjectId.isValid(postId)) throw new Error('No post with this id!');
-    const post = await Post.findByIdAndUpdate(postId, {
-        $push: {
-            likes: userID
-        }
-    }, { new: true });
-    res.status(200).json({
-        status: 'success',
-        post,
-    })
+        const likedUserId = req.userId;
+        const postId = req.params.id;
 
+        if (!mongoose.Types.ObjectId.isValid(postId)) throw new Error('No post with this id!');
+
+        const post = await Post.findByIdAndUpdate(postId, {
+            $push: {
+                likes: likedUserId
+            }
+        }, { new: true });
+
+        const [likedUser, postOwner] = await Promise.all([
+            User.findById(likedUserId),
+            User.findById(post.userID),
+        ]);
+
+        const unseenNotifications = postOwner.unseenNotifications;
+
+        unseenNotifications.push({
+            message: `${likedUser.username} liked your post.`,
+            path: `/post/${post._id}`,
+        })
+
+        const user = await User.findByIdAndUpdate(post.userID, { unseenNotifications })
+
+        res.status(200).json({
+            status: 'success',
+            post,
+        })
+
+    } catch (error) {
+        console.log(error);
+        throw new Error(error.message);
+    }
 })
 
 
@@ -243,8 +265,25 @@ const addComment = asyncHandler(async (req, res) => {
                 time,
             }
         }
-    }, { new: true })
+    }, { new: true });
 
+
+    //Comment notification
+    const [commentedUser, postOwner] = await Promise.all([
+        User.findById(userID),
+        User.findById(post.userID),
+    ]);
+
+    const unseenNotifications = postOwner.unseenNotifications;
+
+    unseenNotifications.push({
+        message: `${commentedUser.username} commented on your post.`,
+        path: `/post/${post._id}`,
+    })
+
+    const user = await User.findByIdAndUpdate(post.userID, { unseenNotifications }) 
+
+    
     const length = post.comments.length;
     res.status(200).json({
         status: 'success',

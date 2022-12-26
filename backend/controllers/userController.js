@@ -412,6 +412,77 @@ const getFollowingsData = asyncHandler(async (req, res) => {
 })
 
 
+//@desc Get Unread notifications
+//@route GET /api/v1/user/notifications/unseen/:userId
+//@access private
+const getUnreadNotifications = asyncHandler(async (req, res) => {
+    const { userId } = req.params;
+
+
+    const result = await User.findById(userId, { unseenNotifications: 1 });
+
+    res.status(200).json({
+        status: 'success',
+        result
+    })
+})
+
+
+
+//@desc Get read notifications
+//@route GET /api/v1/user/notifications/seen/:userId
+//@access private
+const getReadNotifications = asyncHandler(async (req, res) => {
+    const { userId } = req.params;
+
+    const result = await User.findById(userId, { seenNotifications: 1 });
+
+    res.status(200).json({
+        status: 'success',
+        result
+    })
+})
+
+//@desc Set notification as read
+//@route GET /api/v1/user/notification/:id
+//@access private
+const markAsRead = asyncHandler(async (req, res) => {
+    const notificationId = req.params.id;
+
+    const user = await User.findOne(
+        {
+            "unseenNotifications._id": notificationId
+        },
+        {
+            "unseenNotifications.$": 1,
+            seenNotifications: 1,
+        }
+    );
+
+    const seenNotifications = user.seenNotifications;
+    seenNotifications.push(user.unseenNotifications[0]);
+
+    await User.findByIdAndUpdate(user._id, {
+        seenNotifications
+    });
+
+    const updatedUser = await User.findByIdAndUpdate(
+        user._id,
+        {
+            $pull: {
+                unseenNotifications: {
+                    _id: notificationId
+                }
+            }
+        },
+        {new: true}
+    );
+
+    res.status(200).json({
+        status: 'success',
+        updatedUser
+    })
+})
 
 const generateToken = (id) => {
     token = jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '1d' });
@@ -433,4 +504,7 @@ module.exports = {
     forgotPassword,
     changePassword,
     editProfile,
+    getReadNotifications,
+    getUnreadNotifications,
+    markAsRead,
 }

@@ -36,14 +36,22 @@ const userSchema = mongoose.Schema({
         type: String,
         default: null,
     },
-    unseenNotifications: {
-        type: [String],
-        default: null
-    },
-    seenNotifications: {
-        type: [String],
-        default: null
-    },
+    unseenNotifications: [{
+        message: {
+            type: String,
+        },
+        path: {
+            type: String,
+        }
+    }],
+    seenNotifications: [{
+        message: {
+            type: String,
+        },
+        path: {
+            type: String,
+        }
+    }],
     details: {
         relation: {
             type: String,
@@ -55,7 +63,7 @@ const userSchema = mongoose.Schema({
         gender: {
             type: String,
             enum: {
-                values: ['male', 'female','genderqueer'],
+                values: ['male', 'female', 'genderqueer'],
                 message: '{VALUE} is not supported!'
             }
         },
@@ -77,6 +85,6 @@ const userSchema = mongoose.Schema({
         type: Boolean,
         default: false,
     }
-},{timestamps: true})
+}, { timestamps: true })
 
 module.exports = mongoose.model('User', userSchema);

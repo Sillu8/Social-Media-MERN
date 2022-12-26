@@ -36,7 +36,7 @@ const Sidebar = () => {
                 <div className="menu">
                     {
                         user ?
-                        // User menu buttons
+                            // User menu buttons
                             <>
                                 <div className="item">
                                     <NavLink
@@ -48,7 +48,17 @@ const Sidebar = () => {
                                     </NavLink>
                                 </div>
                                 <div className="item">
-                                    <NotificationsIcon /> <span>Notifications</span>
+                                    <NavLink
+                                        className={({ isActive }) =>
+                                            isActive ? 'active-style' : 'inactive-style'
+                                        }
+                                        to={'/notifications'} >
+                                        <div className="user">
+                                            <div>
+                                                <NotificationsIcon /> <span>Notifications</span>
+                                            </div>
+                                        </div>
+                                    </NavLink>
                                 </div>
                                 <div className="item">
                                     <SettingsIcon /> <span>Settings</span>
@@ -108,11 +118,23 @@ const Sidebar = () => {
                                                 <LibraryBooksIcon sx={{ width: '24px', height: '24px' }} />
                                             </div>
                                             <span>Posts</span>
+
                                         </div>
                                     </NavLink>
                                 </div>
                                 <div className="item">
-                                    <NotificationsIcon /> <span>Notifications</span>
+                                    <NavLink
+                                        className={({ isActive }) =>
+                                            isActive ? 'active-style' : 'inactive-style'
+                                        }
+                                        to={'/admin/notifications'} >
+                                        <div className="user">
+                                            <div>
+                                                <NotificationsIcon />
+                                            </div>
+                                            <span>Notifications</span>
+                                        </div>
+                                    </NavLink>
                                 </div>
                                 <div className="item" onClick={adminLogOut}>
                                     <LogoutIcon /> <span>Logout</span>

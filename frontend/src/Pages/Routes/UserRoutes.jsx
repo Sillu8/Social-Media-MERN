@@ -9,13 +9,13 @@ import UserProfile from '../../components/UserProfile/UserProfile'
 import UserProfilePage from '../../components/UserProfilePage/UserProfilePage'
 import Auth from '../Auth/Auth'
 import Home from '../Home/Home'
+import NotificationsPage from '../NotificationsPage'
 import ProfilePage from '../ProfilePage/ProfilePage'
+import SinglePostPage from '../SinglePostPage'
 import PrivateRoute from './PrivateRoute'
 import PublicRoute from './PublicRoute'
 
 const UserRoutes = () => {
-    const { user } = useSelector(state => state.userData);
-
 
     return (
         <>
@@ -52,19 +52,25 @@ const UserRoutes = () => {
                         <Home />
                     </PrivateRoute>
                 } />
-                <Route path={`/profile/${user?.username}`} element={
+                <Route path={`/profile/:username`} element={
                     <PrivateRoute>
                         <ProfilePage />
                     </PrivateRoute>
                 } />
-                <Route path={`/profile/${user?.username}/saved`} element={
+                <Route path={`/profile/:username/saved`} element={
                     <PrivateRoute>
                         <ProfilePage />
                     </PrivateRoute>
                 } />
-                <Route path={`/:userName`} element={
+                <Route path={`/notifications`} element={
                     <PrivateRoute>
-                        <UserProfilePage />
+                        <NotificationsPage />
+                    </PrivateRoute>
+                } />
+
+                <Route path={`/post/:postId`} element={
+                    <PrivateRoute>
+                        <SinglePostPage />
                     </PrivateRoute>
                 } />
 

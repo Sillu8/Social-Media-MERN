@@ -9,18 +9,6 @@ import { fetchUserData } from './redux/auth/userSlice';
 
 function App() {
 
-  const dispatch = useDispatch();
-  const token = localStorage.getItem('token');
-  const { user } = useSelector(state => state.userData);
-
-  //Dispatching for routes
-  useEffect(() => {
-    if (!user) {
-      dispatch(fetchUserData(token));
-    }
-    // eslint-disable-next-line
-  }, [user])
-
   const { loading } = useSelector(state => state.alerts);
 
   return (

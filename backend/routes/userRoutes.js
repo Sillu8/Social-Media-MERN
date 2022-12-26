@@ -1,7 +1,24 @@
 const express = require('express');
 const router = express.Router();
 
-const { getUser, login, signup, suggestions, followUser, unfollowUser, getFollowersData, getFollowingsData, verifyOtp, sendOtp, forgotPassword, changePassword, editProfile } = require('../controllers/userController');
+const { getUser,
+    login,
+    signup,
+    suggestions,
+    followUser,
+    unfollowUser,
+    markAsRead,
+    getFollowersData,
+    getFollowingsData,
+    verifyOtp,
+    sendOtp,
+    forgotPassword,
+    changePassword,
+    editProfile,
+    getUnreadNotifications,
+    getReadNotifications
+} = require('../controllers/userController');
+
 const protect = require('../middleware/authMiddleware');
 
 
@@ -17,6 +34,9 @@ router.get('/followings/:id', getFollowingsData);
 router.patch('/sendOtp', sendOtp);
 router.patch('/forgotPassword', forgotPassword);
 router.patch('/changePassword', changePassword);
+router.get('/notifications/unseen/:userId', protect, getUnreadNotifications);
+router.get('/notifications/seen/:userId', protect, getReadNotifications);
+router.patch('/notification/:id', protect, markAsRead)
 
 
 
