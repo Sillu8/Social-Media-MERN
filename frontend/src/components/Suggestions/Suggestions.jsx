@@ -67,7 +67,7 @@ const Suggestions = () => {
                             <div className="follower" key={suggestion?._id}>
                                 <div className="">
                                     <Avatar src={suggestion?.profilePic} />
-                                    <div className="name" onClick={()=>navigate(`/${suggestion?.username}`)}>
+                                    <div className="name" onClick={()=>navigate(`/profile/${suggestion?.username}`)}>
                                         <span>{suggestion?.name}</span>
                                         <span>{suggestion?.username}</span>
                                     </div>

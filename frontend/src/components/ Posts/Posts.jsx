@@ -11,7 +11,7 @@ const Posts = () => {
 
   const [posts, setPosts] = useState([])
   const dispatch = useDispatch();
-  const user = useSelector(state => state.userData.user);
+  const { user } = useSelector(state => state.userData);
   useEffect(() => {
 
     (async () => {
@@ -24,11 +24,10 @@ const Posts = () => {
         }
       } catch (error) {
         dispatch(hideLoading());
-        toast.error(error.response.data.message)
       }
     })();
 
-    
+
   }, [])
 
 

@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { Avatar, Button,FormLabel, List, ListItem,TextField } from '@mui/material'
+import React, { useEffect, useState } from 'react'
+import { Avatar, Button, FormLabel, List, ListItem, TextField } from '@mui/material'
 import SettingsIcon from '@mui/icons-material/Settings';
 import './UserInfo.scss'
 import { useDispatch, useSelector } from 'react-redux';
@@ -11,46 +11,74 @@ import toast from 'react-hot-toast'
 import { hideLoading, showLoading } from '../../redux/loading/loadSlice';
 import { useForm } from 'react-hook-form';
 import { setUser } from '../../redux/auth/userSlice';
+import { useNavigate, useParams } from 'react-router-dom';
 
-const UserInfo = () => {
-    const style = {
-        position: 'absolute',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
-        width: 400,
-        bgcolor: 'background.paper',
-        border: '2px solid #000',
-        boxShadow: 24,
-        p: 4,
-    };
+const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 24,
+    p: 4,
+};
 
-    const button = {
+const button = {
+    display: 'inline-block',
+    outline: 'none',
+    cursor: 'pointer',
+    fontSize: '16px',
+    lineHeight: '20px',
+    fontWeight: '600',
+    borderRadius: '8px',
+    padding: '10px 22px',
+    border: 'none',
+    transition: 'box-shadow 0.2s ease 0s, -ms-transform 0.1s ease 0s, -webkit-transform 0.1s ease 0s, transform 0.1s ease 0s',
+    background: 'linear-gradient(to right, rgb(230, 30, 77) 0%, rgb(227, 28, 95) 50%, rgb(215, 4, 102) 100%)',
+    color: '#fff',
+}
 
-        display: 'inline-block',
-        outline: 'none',
-        cursor: 'pointer',
-        fontSize: '16px',
-        lineHeight: '20px',
-        fontWeight: '600',
-        borderRadius: '8px',
-        padding: '10px 22px',
-        border: 'none',
-        transition: 'box-shadow 0.2s ease 0s, -ms-transform 0.1s ease 0s, -webkit-transform 0.1s ease 0s, transform 0.1s ease 0s',
-        background: 'linear-gradient(to right, rgb(230, 30, 77) 0%, rgb(227, 28, 95) 50%, rgb(215, 4, 102) 100%)',
-        color: '#fff',
 
-    }
+
+
+
+const UserInfo = ({ isMyProfile }) => {
+
 
     const dispatch = useDispatch();
-    const user = useSelector(state => state.userData.user);
+    const { user } = useSelector(state => state.userData);
+    const navigate = useNavigate();
+    const { username } = useParams();
+
+    const [userData, setUserData] = useState({})
     const [followersData, setFollowersData] = useState([]);
     const [followingsData, setFollowingsData] = useState([]);
+
+    useEffect(() => {
+
+
+        (async () => {
+            try {
+                dispatch(showLoading());
+                const res = await API_USER.get(`/${username}`);
+                dispatch(hideLoading());
+                if (res.data.status === 'success') {
+                    setUserData(res.data.data.user);
+                }
+            } catch (error) {
+                dispatch(hideLoading());
+                console.log(error);
+            }
+        })();
+    }, [username])
+
 
     const getFollowersData = async () => {
         try {
             dispatch(showLoading())
-            const res = await API_USER.get(`/followers/${user?._id}`);
+            const res = await API_USER.get(`/followers/${username}`);
             dispatch(hideLoading());
             setFollowersData(res.data.data.followers);
         } catch (error) {
@@ -62,7 +90,7 @@ const UserInfo = () => {
     const getFollowingsData = async () => {
         try {
             dispatch(showLoading())
-            const res = await API_USER.get(`/followings/${user?._id}`)
+            const res = await API_USER.get(`/followings/${username}`)
             dispatch(hideLoading());
             setFollowingsData(res.data.data.following);
         } catch (error) {
@@ -117,9 +145,17 @@ const UserInfo = () => {
             </div>
             <div className="userInfo">
                 <div className="top">
-                    <span>{user?.username}</span>
-                    <Button variant='outlined' onClick={handleProfileModalOpen}>Edit Profile</Button>
-                    <SettingsIcon sx={{ cursor: 'pointer' }} />
+                    <span>{username}</span>
+                    {
+                        isMyProfile &&
+                        <Button variant='outlined' onClick={handleProfileModalOpen}>Edit Profile</Button>
+                    }
+
+                    {
+                        !isMyProfile && 
+                        <Button variant='outlined'>{'Follow'}</Button>
+                    }
+                    {/* <SettingsIcon sx={{ cursor: 'pointer' }} /> */}
 
                     {/* Profile Modal */}
                     <Modal
@@ -167,8 +203,8 @@ const UserInfo = () => {
 
 
                 <div className="connection">
-                    <span className='posts'>{`${user?.posts?.length} post${user?.posts?.length <= 1 ? '' : 's'}`}</span>
-                    <span className='followers' onClick={handleOpen}>{`${user?.followers?.length} followers`}</span>
+                    <span className='posts'>{`${userData?.posts?.length} post${userData?.posts?.length <= 1 ? '' : 's'}`}</span>
+                    <span className='followers' onClick={handleOpen}>{`${userData?.followers?.length} followers`}</span>
                     <Modal
                         open={followersOpen}
                         onClose={handleClose}
@@ -188,7 +224,7 @@ const UserInfo = () => {
                     </Modal>
 
 
-                    <span className='following' onClick={handleFollowingOpen}>{`${user?.following?.length} following`}</span>
+                    <span className='following' onClick={handleFollowingOpen}>{`${userData?.following?.length} following`}</span>
                     <Modal
                         open={followingsOpen}
                         onClose={handleFollowingClose}
@@ -208,7 +244,7 @@ const UserInfo = () => {
                                             <Button variant='contained'>following</Button>
                                         }
                                     >
-                                        <Typography sx={{ fontWeight: 'bold', fontSize: '20px', marginTop: '3px' }}>{follower.username}</Typography>
+                                        <Typography sx={{ fontWeight: 'bold', fontSize: '20px', marginTop: '3px', cursor: 'pointer' }} onClick={() => {navigate(`/profile/${follower.username}`); handleFollowingClose();}}>{follower.username}</Typography>
                                     </ListItem>
                                 ))}
                             </List>
@@ -218,8 +254,8 @@ const UserInfo = () => {
 
 
                 <div className="userDescription">
-                    <span>{user?.name}</span>
-                    <span>{user?.details?.bio}</span>
+                    <span>{userData?.name}</span>
+                    <span>{userData?.details?.bio}</span>
                 </div>
             </div>
         </div>

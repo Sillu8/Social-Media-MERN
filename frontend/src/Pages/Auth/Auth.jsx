@@ -47,10 +47,12 @@ const Auth = () => {
                 try {
                     dispatch(showLoading())
                     const response = await API.post('/user/login', formData);
+                    dispatch(hideLoading());
                     if (response.data.status === 'success') {
-                        dispatch(hideLoading());
                         localStorage.setItem('token', response.data.data.token);
                         navigate('/home');
+                    }else{
+                        console.log(response)
                     }
                 } catch (error) {
                     dispatch(hideLoading());

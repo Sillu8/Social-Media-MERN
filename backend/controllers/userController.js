@@ -258,6 +258,23 @@ const getUser = asyncHandler(async (req, res) => {
 })
 
 
+//@desc Get user
+//@route GET /api/v1/user/:username
+//@access private
+const getUserData = asyncHandler(async (req, res) => {
+    const { username } = req.params;
+
+    const user = await User.findOne({ username });
+    res.status(200).json({
+        status: 'success',
+        data: {
+            user
+        }
+    })
+})
+
+
+
 //@desc Edit Profile
 //@route PUT /api/v1/user
 //@access private
@@ -368,13 +385,13 @@ const unfollowUser = asyncHandler(async (req, res) => {
 
 
 //@desc Get followers data
-//@route GET /api/v1/user/followers/:id
+//@route GET /api/v1/user/followers/:username
 //@access private
 const getFollowersData = asyncHandler(async (req, res) => {
     try {
-        const { id } = req.params;
+        const { username } = req.params;
 
-        const { followers } = await User.findById(id, { username: 1 }).populate('followers', { username: 1 });
+        const { followers } = await User.findOne({ username }, { username: 1 }).populate('followers', { username: 1 });
 
         res.status(200).json({
             status: 'success',
@@ -385,19 +402,20 @@ const getFollowersData = asyncHandler(async (req, res) => {
 
     } catch (error) {
         console.log(error);
+        throw new Error('Some unknown error!')
     }
 })
 
 
 
 //@desc Get followers data
-//@route GET /api/v1/user/followings/:id
+//@route GET /api/v1/user/followings/:username
 //@access private
 const getFollowingsData = asyncHandler(async (req, res) => {
     try {
-        const { id } = req.params;
+        const { username } = req.params;
 
-        const { following } = await User.findById(id, { username: 1 }).populate('following', { username: 1 });
+        const { following } = await User.findOne({ username }, { username: 1 }).populate('following', { username: 1 });
 
         res.status(200).json({
             status: 'success',
@@ -408,6 +426,7 @@ const getFollowingsData = asyncHandler(async (req, res) => {
 
     } catch (error) {
         console.log(error);
+        throw new Error(error)
     }
 })
 
@@ -475,7 +494,7 @@ const markAsRead = asyncHandler(async (req, res) => {
                 }
             }
         },
-        {new: true}
+        { new: true }
     );
 
     res.status(200).json({
@@ -507,4 +526,5 @@ module.exports = {
     getReadNotifications,
     getUnreadNotifications,
     markAsRead,
+    getUserData,
 }

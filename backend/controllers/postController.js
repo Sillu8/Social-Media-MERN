@@ -15,7 +15,7 @@ const { default: mongoose } = require("mongoose");
 // @access  Private
 const allPosts = asyncHandler(async (req, res) => {
     const userId = req.userId;
-    const posts = await Post.find({}).limit(5).sort({ createdAt: "desc" });
+    const posts = await Post.find({}).limit(10).sort({ createdAt: "desc" });
     res.status(200).json({
         status: 'success',
         result: posts.length,
@@ -68,11 +68,15 @@ const newPost = asyncHandler(async (req, res) => {
 
 
 // @desc Get all posts of a user
-// @route GET /api/v1/post
+// @route GET /api/v1/post/userposts/:username
 // @access  Private
 const userPosts = asyncHandler(async (req, res) => {
-    const userId = req.userId;
-    const posts = await Post.find({ userID: userId }).sort({ createdAt: "desc" });
+
+    const { username } = req.params;
+
+    const user = await User.findOne({ username });
+
+    const posts = await Post.find({userID: user._id}).sort({ createdAt: "desc" });
     res.status(200).json({
         status: 'success',
         result: posts.length,
@@ -85,7 +89,7 @@ const userPosts = asyncHandler(async (req, res) => {
 
 
 // @desc Get all saved posts of a user
-// @route GET /api/v1/post/savedPosts
+// @route GET /api/v1/post/savedPosts/:username
 // @access  Private
 const userSavedPosts = asyncHandler(async (req, res) => {
     const userId = req.userId;
@@ -281,9 +285,9 @@ const addComment = asyncHandler(async (req, res) => {
         path: `/post/${post._id}`,
     })
 
-    const user = await User.findByIdAndUpdate(post.userID, { unseenNotifications }) 
+    const user = await User.findByIdAndUpdate(post.userID, { unseenNotifications })
 
-    
+
     const length = post.comments.length;
     res.status(200).json({
         status: 'success',

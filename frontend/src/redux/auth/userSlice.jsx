@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { toast } from 'react-hot-toast';
 import { getUser } from '../authService';
 
 export const fetchUserData = createAsyncThunk('user/fetchUser',
@@ -43,6 +44,7 @@ export const userSlice = createSlice({
             state.user = null;
             state.message = action.payload;
             localStorage.removeItem('token');
+            toast.error(state.message);
         });
     },
 

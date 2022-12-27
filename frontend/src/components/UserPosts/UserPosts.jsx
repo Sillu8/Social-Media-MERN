@@ -1,4 +1,5 @@
 import React from 'react'
+import Post from '../Post/Post'
 import './userposts.scss'
 
 const UserPosts = ({data}) => {
@@ -9,9 +10,7 @@ const UserPosts = ({data}) => {
         {
             data?.map(post => {
                 return (
-                    <div className="userpost">
-                        <img src={post.images} alt="" />
-                    </div>
+                    <Post data={post} id={post._id}/>
                 )
             })
         }

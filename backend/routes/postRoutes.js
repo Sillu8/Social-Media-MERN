@@ -10,9 +10,9 @@ router.route('/')
       .post(protect, upload.single('image'), newPost)
       .delete(protect, deletePost)
 
-router.route('/userposts')
+router.route('/userposts/:username')
       .get(protect, userPosts);
-router.get('/savedPosts', protect, userSavedPosts);
+router.get('/savedPosts/:username', protect, userSavedPosts);
 
 
 router.patch('/:id/like', protect, likePost);
