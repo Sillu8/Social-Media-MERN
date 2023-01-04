@@ -7,7 +7,7 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
 import './Post.scss'
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { Avatar, Box, Button, IconButton, Menu, MenuItem, Modal, Typography } from '@mui/material';
+import { Avatar, Box, Button, IconButton, Menu, MenuItem, Modal, TextField, Typography } from '@mui/material';
 import { Link } from 'react-router-dom'
 import Comments from '../Comments/Comments';
 import toast from 'react-hot-toast';
@@ -39,23 +39,40 @@ const style = {
 
 const Post = ({ data, id }) => {
 
-    
-    
+
+
     const dispatch = useDispatch();
     const { user } = useSelector(state => state.userData);
-    
-    
+
+
     const [post, setPost] = useState(data);
     const [removePost, setRemovePost] = useState(false)
-    
-    
-    useEffect(()=>{
+
+
+    useEffect(() => {
         setPost(data);
-    },[data])
-    //Delete dialog states
-    const [dialogOpen, setDialogOpen] = useState(false);
-    const handleDialogOpen = () => setDialogOpen(true)
-    const handleDialogClose = () => setDialogOpen(false);
+    }, [data])
+
+
+    //Edit Modal States
+    const [desc, setDesc] = useState(post?.desc);
+    const [editModalOpen, setEditModalOpen] = useState(false);
+    const handleEditModalOpen = () => setEditModalOpen(true);
+    const handleEditModalClose = () => setEditModalOpen(false);
+
+    const handleEditSubmit = async () => {
+        try {
+            handleEditModalClose();
+            dispatch(showLoading());
+            const res = await POSTS.patch(`/${post?._id}/edit`, { desc });
+            dispatch(hideLoading());
+            setPost(res.data.post);
+        } catch (error) {
+            dispatch(hideLoading());
+            console.log(error);
+            toast.error(error.response.data.message)
+        }
+    }
 
 
     //Report Modal states
@@ -85,6 +102,14 @@ const Post = ({ data, id }) => {
     };
 
 
+
+
+
+    //Delete dialog states
+    const [dialogOpen, setDialogOpen] = useState(false);
+    const handleDialogOpen = () => setDialogOpen(true)
+    const handleDialogClose = () => setDialogOpen(false);
+
     //Delete Post
     const deletePost = async () => {
         try {
@@ -110,7 +135,7 @@ const Post = ({ data, id }) => {
     const [showComments, setShowComments] = useState(false);
     const [isMyPost, setIsMyPost] = useState(user?._id === post?.userID);
 
-
+    //Post buttons toggle
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
     const handleClick = (event) => {
@@ -170,15 +195,15 @@ const Post = ({ data, id }) => {
         <div className={removePost ? 'post d-none' : 'post'} key={data._id}>
             <div className="container">
                 <div className="user">
-                    <div className="user-info">
-                        <Avatar src={post?.userProfilePic} sx={{ width: '30px', height: '30px', cursor: 'pointer' }} />
-                        <div className="details">
-                            <Link to={`/profile/${post?._id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                    <Link to={`/profile/${post?.userName}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                        <div className="user-info">
+                            <Avatar src={post?.userProfilePic} sx={{ width: '30px', height: '30px', cursor: 'pointer' }} />
+                            <div className="details">
                                 <span className='name'>{post?.userName}</span>
-                            </Link>
-                            <span className='date'>{moment(post?.createdAt).fromNow()}</span>
+                                <span className='date'>{moment(post?.createdAt).fromNow()}</span>
+                            </div>
                         </div>
-                    </div>
+                    </Link>
                     {/* Icon for buttons */}
                     <Menu
                         id="long-menu"
@@ -195,6 +220,16 @@ const Post = ({ data, id }) => {
                             },
                         }}
                     >
+                        {
+                            isMyPost &&
+                            <MenuItem onClick={() => {
+                                handleClose();
+                                handleEditModalOpen();
+                            }}>
+                                Edit
+                            </MenuItem>
+
+                        }
                         {
                             isMyPost &&
                             <MenuItem onClick={() => {
@@ -225,6 +260,25 @@ const Post = ({ data, id }) => {
                     >
                         <MoreVertIcon sx={{ cursor: 'pointer' }} />
                     </IconButton>
+
+
+                    {/* Edit Modal */}
+                    <Modal
+                        open={editModalOpen}
+                        onClose={handleEditModalClose}
+                        aria-labelledby="modal-modal-title"
+                        aria-describedby="modal-modal-description"
+                    >
+                        <Box sx={style}>
+                            <Typography id="modal-modal-title" variant="h6" component="h2" sx={{ textAlign: 'center', marginBottom: '20px' }}>
+                                EDIT
+                            </Typography>
+
+                            <TextField size='small' sx={{ marginBottom: '20px', color: 'white', }} fullWidth label='Description' value={desc} onChange={(e) => setDesc(e.target.value)} />
+                            <Button sx={{ marginTop: '20px' }} variant='contained' type='submit' onClick={handleEditSubmit}>SUBMIT</Button>
+                        </Box>
+                    </Modal>
+
 
 
 

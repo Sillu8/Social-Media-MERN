@@ -19,7 +19,7 @@ const messageRoutes = require('./routes/messageRoutes');
 connectDB();
 const io = socketIO(process.env.SOCKET_PORT, {
     cors: {
-        origin: 'http://localhost:3000',
+        origin: 'https://www.chat.ecart.ltd/',
     },
 });
 
@@ -68,6 +68,12 @@ io.on('connection', socket => {
 const app = express();
 
 app.use(cors())
+// {
+//     origin: ['https://www.chat.ecart.ltd/','https://chat.ecart.ltd/'],
+//     methods: ['GET','POST','PUT','PATCH','DELETE'],
+//     credentials: true,
+//     allowedHeaders: ['Content-Type','Access']
+// }
 app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));

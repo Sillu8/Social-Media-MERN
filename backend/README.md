@@ -1,0 +1,20 @@
+# Chatter-Social-Media-Backend
+This is the backend of chatter social media app.
+
+##
+ENV required,
+
+### NODE_ENV=DEVELOPMENT
+### PORT
+### DATABASE
+### JWT_SECRET
+### CLOUDINARY_URL
+### CLOUDINARY_API_KEY
+### CLOUDINARY_API_SECRET
+### CLOUDINARY_NAME
+### SOCKET_PORT
+### TWILIO_ACCOUNT_SID
+### TWILIO_AUTH_TOKEN
+### TWILIO_SERVICE_SID, 
+### SESSION_SECRET
+
