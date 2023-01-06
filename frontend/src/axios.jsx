@@ -19,6 +19,7 @@ API_USER.interceptors.request.use(
     }
 )
 
+
 export const API_POST = axios.create({
     baseURL: 'http://localhost:4000/api/v1/post'
 })

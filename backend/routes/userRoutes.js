@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
 
-const { getUser,
+const { 
+    getUser,
     login,
     signup,
     suggestions,

@@ -62,6 +62,8 @@ const PostShare = ({data}) => {
       if (response.data.status === 'success') {
         toast.success(response.data.message);
         setPosts([response.data.post,...posts]);
+      }else{
+        toast.error(response.data.message)
       }
     } catch (error) {
       dispatch(hideLoading());

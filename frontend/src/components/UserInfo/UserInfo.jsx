@@ -116,21 +116,20 @@ const UserInfo = ({ isMyProfile }) => {
 
 
     //Modal for edit profile
-    const handleProfileModalOpen = () => {
-        setProfileModal(true)
-    };
     const [profileModal, setProfileModal] = useState(false);
+    const handleProfileModalOpen = () => setProfileModal(true)
     const handleProfileModalClose = () => setProfileModal(false);
 
 
     const { register, handleSubmit, formState: { errors }, setValue } = useForm();
     const onSubmit = async (data) => {
         try {
-            console.log(register);
+            handleProfileModalClose();
             dispatch(showLoading());
             const res = await API_USER.put('/', data);
             dispatch(hideLoading());
-            dispatch(setUser(res.data.user))
+            setUserData(res.data.data.user)
+            dispatch(setUser(res.data.data.user))
         } catch (error) {
             dispatch(hideLoading());
             console.log(error);
@@ -189,9 +188,9 @@ const UserInfo = ({ isMyProfile }) => {
                                     <div style={{ marginBottom: '10px' }}>
                                         <label htmlFor="relation">Relation</label><br />
                                         <label htmlFor="" style={{ marginRight: '5px' }}>Single</label>
-                                        <input {...register("relation", { required: true })} type="radio" value="single" style={{ marginRight: '5px' }} />
+                                        <input defaultChecked={userData?.details?.relation === 'single'} {...register("relation", { required: true })} type="radio" value="single" style={{ marginRight: '5px' }} />
                                         <label htmlFor="" style={{ marginRight: '5px' }}>Married</label>
-                                        <input {...register("relation", { required: true })} type="radio" value="married" style={{ marginRight: '5px' }} />
+                                        <input defaultChecked={userData?.details?.relation === 'married'} {...register("relation", { required: true })} type="radio" value="married" style={{ marginRight: '5px' }} />
                                     </div>
 
                                     <input type="submit" value={'UPDATE'} style={button} />

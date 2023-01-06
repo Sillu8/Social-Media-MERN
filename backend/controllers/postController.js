@@ -14,9 +14,23 @@ const { default: mongoose } = require("mongoose");
 // @route GET /api/v1/post
 // @access  Private
 const allPosts = asyncHandler(async (req, res) => {
+
     const userId = req.userId;
-    const posts = await Post.find({}).limit(10).sort({ createdAt: "desc" });
-    res.status(200).json({
+
+    const { following } = await User.findById(userId);
+
+    const posts = await Post.find({
+        userID: {
+            $in: [...following, userId]
+        }
+    }).limit(10)
+        .sort({
+            createdAt: "desc"
+        });
+
+
+    res.status(200)
+       .json({
         status: 'success',
         result: posts.length,
         data: {

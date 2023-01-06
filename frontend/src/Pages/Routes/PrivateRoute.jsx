@@ -22,10 +22,11 @@ const PrivateRoute = ({ children }) => {
 
 
     if (!token) {
-        navigate('/');
+        return navigate('/');
     } else {
         return children;
     }
+
 }
 
 export default PrivateRoute
