@@ -11,7 +11,7 @@ import { useSelector } from 'react-redux';
 const Navbar = () => {
 
     const { admin } = useSelector(state => state.adminData);
-    const user = useSelector(state => state.userData.user);
+    const {user} = useSelector(state => state.userData);
     const isDark = false;
 
 
@@ -30,7 +30,7 @@ const Navbar = () => {
                     <Search />
                 </div>
                 <div className="user">
-                    <Avatar sx={{ cursor: 'pointer', width: '30px', height: '30px' }} />
+                    <Avatar src={user?.profilePic} sx={{ cursor: 'pointer', width: '30px', height: '30px' }} />
                     <span style={{ cursor: 'pointer' }}>{
                         user ? user?.name?.split(' ')[0] : admin?.name?.split(' ')[0]
                     }</span>

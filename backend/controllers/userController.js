@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken')
 
 const User = require('../model/userModel');
 const Conversation = require('../model/conversationModel');
+const cloudinary = require('../utils/cloudinary')
 
 const { TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_SERVICE_SID } = process.env;
 const client = require('twilio')(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, {
@@ -501,7 +502,44 @@ const markAsRead = asyncHandler(async (req, res) => {
         status: 'success',
         updatedUser
     })
+});
+
+
+
+
+//@desc Edit Profile Pic
+//@route GET /api/v1/user/:userId/profilepic
+//@access private
+const editProfilePic = asyncHandler(async (req, res) => {
+    try {
+        const { userId } = req.params;
+
+        const file = req.file;
+        const result = await cloudinary.uploader.upload(file?.path, { folder: 'users' });
+
+        console.log(result);
+        const user = await User.findByIdAndUpdate(userId,
+            {
+                profilePic: result.secure_url,
+                public_id: result.public_id
+            }, { new: true });
+
+        console.log(user)    
+
+        res.status(200).json({
+            status: 'success',
+            data: {
+                user
+            }
+        })
+    } catch (error) {
+        console.log(error);
+        throw new Error(error.message);
+    }
 })
+
+
+
 
 const generateToken = (id) => {
     token = jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '1d' });
@@ -527,4 +565,5 @@ module.exports = {
     getUnreadNotifications,
     markAsRead,
     getUserData,
+    editProfilePic,
 }

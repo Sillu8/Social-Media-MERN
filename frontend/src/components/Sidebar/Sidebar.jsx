@@ -15,7 +15,7 @@ import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
 
 const Sidebar = () => {
     const navigate = useNavigate();
-    const user = useSelector(state => state.userData.user);
+    const { user } = useSelector(state => state.userData);
     const dispatch = useDispatch()
 
     const logOut = () => {
@@ -71,7 +71,7 @@ const Sidebar = () => {
                                         to={`/profile/${user?.username}`} >
                                         <div className="user">
                                             <div>
-                                                <Avatar sx={{ width: '24px', height: '24px' }} />
+                                                <Avatar src={user?.profilePic} sx={{ width: '24px', height: '24px' }} />
                                             </div>
                                             <span>Profile</span>
                                         </div>

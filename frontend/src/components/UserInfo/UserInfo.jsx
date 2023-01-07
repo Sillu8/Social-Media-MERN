@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { Avatar, Button, FormLabel, List, ListItem, TextField } from '@mui/material'
-import SettingsIcon from '@mui/icons-material/Settings';
+// import SettingsIcon from '@mui/icons-material/Settings';
 import './UserInfo.scss'
 import { useDispatch, useSelector } from 'react-redux';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
-import { API_USER } from '../../axios';
+import { API_USER, USER } from '../../axios';
 import toast from 'react-hot-toast'
 import { hideLoading, showLoading } from '../../redux/loading/loadSlice';
 import { useForm } from 'react-hook-form';
@@ -120,7 +120,7 @@ const UserInfo = ({ isMyProfile }) => {
     const handleProfileModalOpen = () => setProfileModal(true)
     const handleProfileModalClose = () => setProfileModal(false);
 
-
+    //eslint-disable-next-line
     const { register, handleSubmit, formState: { errors }, setValue } = useForm();
     const onSubmit = async (data) => {
         try {
@@ -137,10 +137,64 @@ const UserInfo = ({ isMyProfile }) => {
     }
 
 
+    //ProfilePic handling
+    const [formData, setFormData] = useState({})
+    const [image, setImage] = useState({});
+    const [profilePicModalOpen, setProfilePicModalOpen] = useState(false);
+    const handleProfilePicModalOpen = () => setProfilePicModalOpen(true);
+    const handleProfilePicModalClose = () => setProfilePicModalOpen(false);
+
+    const imageChange = (event) => {
+        if (event.target.files && event.target.files[0]) {
+            let img = event.target.files[0];
+            setImage({
+                image: img
+            });
+        }
+    }
+
+    useEffect(() => {
+        setFormData({ ...formData, ...image })
+        //eslint-disable-next-line
+    }, [image])
+
+    const handleProfilePic = async (e) => {
+        try {
+            e.preventDefault();
+            dispatch(showLoading());
+            handleProfilePicModalClose();
+            const res = await USER.patch(`/${user?._id}/profilepic`, formData);
+            dispatch(setUser(res.data.data.user));
+            dispatch(hideLoading());
+        } catch (error) {
+            dispatch(hideLoading());
+            console.log(error)
+        }
+    }
+
+
     return (
         <div className="ProfileData">
             <div className="profilePic">
-                <Avatar sx={{ width: '150px', height: '150px' }} />
+                <Avatar src={user?.profilePic} sx={{ width: '150px', height: '150px', cursor: 'pointer' }} onClick={isMyProfile ? handleProfilePicModalOpen : undefined} />
+                <Modal
+                    open={profilePicModalOpen}
+                    onClose={handleProfilePicModalClose}
+                    aria-labelledby="modal-modal-title"
+                    aria-describedby="modal-modal-description"
+                >
+                    <Box sx={style}>
+                        <Typography id="modal-modal-title" align='center' variant="h6" component="h2" sx={{ marginBottom: '20px' }}>
+                            Upload a new Profile Pic!
+                        </Typography>
+                        <form encType="multipart/form-data" className='post-form' onSubmit={handleProfilePic}>
+                            <div className="fileInput">
+                                <TextField type='file' multiple={false} onChange={imageChange} required />
+                            </div>
+                            <Button sx={{ marginTop: '20px' }} variant='contained' type='submit'>POST</Button>
+                        </form>
+                    </Box>
+                </Modal>
             </div>
             <div className="userInfo">
                 <div className="top">
@@ -151,7 +205,7 @@ const UserInfo = ({ isMyProfile }) => {
                     }
 
                     {
-                        !isMyProfile && 
+                        !isMyProfile &&
                         <Button variant='outlined'>{'Follow'}</Button>
                     }
                     {/* <SettingsIcon sx={{ cursor: 'pointer' }} /> */}
@@ -243,7 +297,7 @@ const UserInfo = ({ isMyProfile }) => {
                                             <Button variant='contained'>following</Button>
                                         }
                                     >
-                                        <Typography sx={{ fontWeight: 'bold', fontSize: '20px', marginTop: '3px', cursor: 'pointer' }} onClick={() => {navigate(`/profile/${follower.username}`); handleFollowingClose();}}>{follower.username}</Typography>
+                                        <Typography sx={{ fontWeight: 'bold', fontSize: '20px', marginTop: '3px', cursor: 'pointer' }} onClick={() => { navigate(`/profile/${follower.username}`); handleFollowingClose(); }}>{follower.username}</Typography>
                                     </ListItem>
                                 ))}
                             </List>

@@ -22,6 +22,9 @@ const allPosts = asyncHandler(async (req, res) => {
     const posts = await Post.find({
         userID: {
             $in: [...following, userId]
+        },
+        "report.reportedUserId": {
+            $ne: userId
         }
     }).limit(10)
         .sort({
@@ -30,13 +33,13 @@ const allPosts = asyncHandler(async (req, res) => {
 
 
     res.status(200)
-       .json({
-        status: 'success',
-        result: posts.length,
-        data: {
-            posts
-        }
-    })
+        .json({
+            status: 'success',
+            result: posts.length,
+            data: {
+                posts
+            }
+        })
 })
 
 

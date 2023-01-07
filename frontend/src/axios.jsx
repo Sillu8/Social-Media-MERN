@@ -20,6 +20,21 @@ API_USER.interceptors.request.use(
 )
 
 
+export const USER = axios.create({
+    baseURL: 'http://localhost:4000/api/v1/user'
+})
+
+
+USER.interceptors.request.use(
+    config => {
+        config.headers['Authorization'] = token;
+        config.headers['Content-Type'] = 'multipart/form-data';
+        return config;
+    }
+)
+
+
+
 export const API_POST = axios.create({
     baseURL: 'http://localhost:4000/api/v1/post'
 })
