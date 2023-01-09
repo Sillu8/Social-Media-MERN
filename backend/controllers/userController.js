@@ -524,7 +524,7 @@ const editProfilePic = asyncHandler(async (req, res) => {
                 public_id: result.public_id
             }, { new: true });
 
-        console.log(user)    
+        console.log(user)
 
         res.status(200).json({
             status: 'success',
@@ -538,6 +538,24 @@ const editProfilePic = asyncHandler(async (req, res) => {
     }
 })
 
+
+
+//@desc Searching for users
+//@route GET /api/v1/user/search
+//@access private
+const searchUsers = asyncHandler(async (req, res) => {
+
+    const searchQuery = req.query.q;
+
+    const users = await User.find({
+        username: { $regex: searchQuery }
+    }, { username: 1 });
+
+    res.status(200).json({
+        status: 'success',
+        users
+    })
+})
 
 
 
@@ -566,4 +584,5 @@ module.exports = {
     markAsRead,
     getUserData,
     editProfilePic,
+    searchUsers,
 }

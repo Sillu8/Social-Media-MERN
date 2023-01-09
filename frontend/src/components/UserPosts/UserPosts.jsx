@@ -10,7 +10,7 @@ const UserPosts = ({ data }) => {
       {
         data?.map(post => {
           return (
-            <Post data={post} id={post._id} />
+            <Post data={post} key={post._id} id={post._id} />
           )
         })
       }

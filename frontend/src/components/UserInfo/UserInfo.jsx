@@ -176,7 +176,7 @@ const UserInfo = ({ isMyProfile }) => {
     return (
         <div className="ProfileData">
             <div className="profilePic">
-                <Avatar src={user?.profilePic} sx={{ width: '150px', height: '150px', cursor: 'pointer' }} onClick={isMyProfile ? handleProfilePicModalOpen : undefined} />
+                <Avatar src={userData?.profilePic} sx={{ width: '150px', height: '150px', cursor: 'pointer' }} onClick={isMyProfile ? handleProfilePicModalOpen : undefined} />
                 <Modal
                     open={profilePicModalOpen}
                     onClose={handleProfilePicModalClose}

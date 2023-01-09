@@ -8,7 +8,7 @@ const PublicRoute = ({ children }) => {
         return navigate('/home');
     } else {
         return children;
-    }
+    }   
 }
 
 export default PublicRoute
