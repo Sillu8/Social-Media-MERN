@@ -74,7 +74,7 @@ io.on('connection', socket => {
 
 app.use(cors(
     {
-        origin: ['https://www.chat.ecart.ltd/', 'https://chat.ecart.ltd/'],
+        origin: ['https://www.chat.ecart.ltd', 'https://chat.ecart.ltd'],
         methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
         credentials: true,
         allowedHeaders: ['Content-Type', 'Access']
