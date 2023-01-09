@@ -19,13 +19,11 @@ const PrivateRoute = ({ children }) => {
         // eslint-disable-next-line
     }, [user])
 
-
     if (!token) {
         return navigate('/');
     } else {
         return children;
     }
-
 }
 
 export default PrivateRoute

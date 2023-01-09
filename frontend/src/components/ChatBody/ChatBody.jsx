@@ -26,7 +26,8 @@ const ChatBody = ({ state }) => {
     const socket = useRef();
 
     useEffect(() => {
-        socket.current = io('ws://localhost:4001');
+        // socket.current = io('ws://localhost:4000');
+        socket.current = io('https://chatter.ecart.ltd')
 
         socket.current.on('getMessage', data => {
             setArrivalMsg({

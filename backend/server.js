@@ -3,7 +3,7 @@ const dotenv = require('dotenv').config();
 const cors = require('cors')
 const morgan = require('morgan');
 const colors = require('colors');
-const socketIO = require('socket.io');
+// const socketIO = require('socket.io');
 const port = process.env.PORT || 5000;
 
 
@@ -15,11 +15,17 @@ const postRoutes = require('./routes/postRoutes');
 const conversationRoutes = require('./routes/conversationRoutes');
 const messageRoutes = require('./routes/messageRoutes');
 
+const app = express();
 
 connectDB();
-const io = socketIO(process.env.SOCKET_PORT, {
+
+const { createServer } = require('http')
+const httpServer = createServer(app);
+const { Server } = require('socket.io');
+
+const io = new Server(httpServer, {
     cors: {
-        origin: 'https://www.chat.ecart.ltd/',
+        origin: ["http://localhost:3000", "https://www.chat.ecart.ltd", "https://chat.ecart.ltd"],
     },
 });
 
@@ -65,15 +71,16 @@ io.on('connection', socket => {
         io.emit('getUsers', users);
     })
 })
-const app = express();
 
-app.use(cors())
-// {
-//     origin: ['https://www.chat.ecart.ltd/','https://chat.ecart.ltd/'],
-//     methods: ['GET','POST','PUT','PATCH','DELETE'],
-//     credentials: true,
-//     allowedHeaders: ['Content-Type','Access']
-// }
+app.use(cors(
+    {
+        origin: ['https://www.chat.ecart.ltd/', 'https://chat.ecart.ltd/'],
+        methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+        credentials: true,
+        allowedHeaders: ['Content-Type', 'Access']
+    }
+))
+
 app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -91,4 +98,4 @@ app.use('/api/v1/message', messageRoutes);
 
 app.use(errorHandler);
 
-app.listen(port, () => console.log(`Server started on ${port}`.black.bgCyan));
+httpServer.listen(port, () => console.log(`Server started on ${port}`.black.bgCyan));
