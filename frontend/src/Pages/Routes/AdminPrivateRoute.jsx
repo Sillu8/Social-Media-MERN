@@ -1,13 +1,12 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import { fetchAdminData } from '../../redux/auth/adminSlice';
 
 const token = localStorage.getItem('adminToken')
 
 const AdminPrivateRoute = ({ children }) => {
 
-    const navigate = useNavigate()
     const dispatch = useDispatch();
     const { admin } = useSelector(state => state.adminData);
 
@@ -19,7 +18,7 @@ const AdminPrivateRoute = ({ children }) => {
 
 
     if (!token) {
-        navigate('/admin/home');
+        return <Navigate to={'/admin/login'} />
     } else {
         return children;
     }

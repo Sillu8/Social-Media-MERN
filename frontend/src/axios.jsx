@@ -1,10 +1,12 @@
 import axios from 'axios';
 
-// baseURL: 'http://localhost:4000'
+const APP_ENVIRONMENT = ''
+
+const API_URL = APP_ENVIRONMENT === 'test' ? 'http://localhost:4000' : 'https://chatter.ecart.ltd/'
 
 
 export const API = axios.create({
-    baseURL: 'https://chatter.ecart.ltd/api/v1'
+    baseURL: `${API_URL}/api/v1`
 });
 
 const token = `Bearer ${localStorage.getItem('token')}`;
@@ -12,7 +14,7 @@ const adminToken = `Bearer ${localStorage.getItem('adminToken')}`;
 
 
 export const API_USER = axios.create({
-    baseURL: 'https://chatter.ecart.ltd/api/v1/user'
+    baseURL: `${API_URL}/api/v1/user`
 })
 
 API_USER.interceptors.request.use(
@@ -24,7 +26,7 @@ API_USER.interceptors.request.use(
 
 
 export const USER = axios.create({
-    baseURL: 'https://chatter.ecart.ltd/api/v1/user'
+    baseURL: `${API_URL}/api/v1/user`
 })
 
 
@@ -39,7 +41,7 @@ USER.interceptors.request.use(
 
 
 export const API_POST = axios.create({
-    baseURL: 'https://chatter.ecart.ltd/api/v1/post'
+    baseURL: `${API_URL}/api/v1/post`
 })
 
 API_POST.interceptors.request.use(
@@ -51,7 +53,7 @@ API_POST.interceptors.request.use(
 )
 
 export const POSTS = axios.create({
-    baseURL: 'https://chatter.ecart.ltd/api/v1/post'
+    baseURL: `${API_URL}/api/v1/post`
 })
 
 POSTS.interceptors.request.use(
@@ -63,7 +65,7 @@ POSTS.interceptors.request.use(
 
 
 export const CONVERSATION = axios.create({
-    baseURL: 'https://chatter.ecart.ltd/api/v1/conversation',
+    baseURL: `${API_URL}/api/v1/conversation`,
 })
 
 CONVERSATION.interceptors.request.use(
@@ -75,7 +77,7 @@ CONVERSATION.interceptors.request.use(
 
 
 export const MESSAGE_API = axios.create({
-    baseURL: 'https://chatter.ecart.ltd/api/v1/message',
+    baseURL: `${API_URL}/api/v1/message`,
 })
 
 MESSAGE_API.interceptors.request.use(
@@ -87,7 +89,7 @@ MESSAGE_API.interceptors.request.use(
 
 
 export const API_ADMIN = axios.create({
-    baseURL: 'https://chatter.ecart.ltd/api/v1/admin'
+    baseURL: `${API_URL}/api/v1/admin`
 });
 
 
@@ -100,7 +102,7 @@ API_ADMIN.interceptors.request.use(
 
 
 export const API_ADMIN_POST = axios.create({
-    baseURL: 'https://chatter.ecart.ltd/api/v1/post'
+    baseURL: `${API_URL}/api/v1/post`
 });
 
 

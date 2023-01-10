@@ -1,11 +1,9 @@
-import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 
 const AdminPublicRoute = ({ children }) => {
-    const navigate = useNavigate();
 
     if (localStorage.getItem('adminToken')) {
-        return navigate('/admin/home');
+        return <Navigate to={'/admin/home'} />
     } else {
         return children;
     }

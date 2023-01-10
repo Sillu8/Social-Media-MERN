@@ -1,11 +1,8 @@
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 
 const PublicRoute = ({ children }) => {
-    const navigate = useNavigate();
-
     if (localStorage.getItem('token')) {
-        return navigate('/home');
+        return <Navigate to={'/home'} />
     } else {
         return children;
     }   
